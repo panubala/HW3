@@ -1,6 +1,8 @@
 package cd.frontend.semantic;
 
-public class SymbolTable {
+import cd.ir.Symbol;
+
+public class SymbolTable<S extends Symbol>{
 
 		private SymbolTable table;
 		

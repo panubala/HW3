@@ -7,6 +7,5 @@ public class TypeChecker {
 		this.symbolTable = symbolTable;
 	}
 
-	aefra
 
 }

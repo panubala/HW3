@@ -42,14 +42,14 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable<
 
 	@Override
 	public TypeSymbol booleanConst(BooleanConst ast, SymbolTable<VariableSymbol> arg) {
-		// TODO Auto-generated method stub
-		return super.booleanConst(ast, arg);
+		ast.type = Symbol.PrimitiveTypeSymbol.booleanType;
+		return ast.type;
 	}
 
 	@Override
 	public TypeSymbol builtInRead(BuiltInRead ast, SymbolTable<VariableSymbol> arg) {
-		// TODO Auto-generated method stub
-		return super.builtInRead(ast, arg);
+		ast.type = Symbol.PrimitiveTypeSymbol.intType;
+		return ast.type;
 	}
 
 	@Override
@@ -66,14 +66,25 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable<
 
 	@Override
 	public TypeSymbol index(Index ast, SymbolTable<VariableSymbol> arg) {
-		// TODO Auto-generated method stub
-		return super.index(ast, arg);
+		
+		Symbol.TypeSymbol leftType = visit(ast.left(), arg);
+		Symbol.TypeSymbol rightType = visit(ast.right(), arg);
+		
+		 if (!rightType.equals(Symbol.PrimitiveTypeSymbol.intType)) {
+	            throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "Mismatch");
+	        }
+		 if (!leftType.isArrayType()) {
+	            throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "It is not an array");
+	        } 
+		 
+		ast.type = ((Symbol.ArrayTypeSymbol) leftType).elementType;
+		return ast.type;
 	}
 
 	@Override
 	public TypeSymbol intConst(IntConst ast, SymbolTable<VariableSymbol> arg) {
-		// TODO Auto-generated method stub
-		return super.intConst(ast, arg);
+		ast.type = Symbol.PrimitiveTypeSymbol.intType;
+		return ast.type;
 	}
 
 	@Override
@@ -96,8 +107,8 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable<
 
 	@Override
 	public TypeSymbol nullConst(NullConst ast, SymbolTable<VariableSymbol> arg) {
-		// TODO Auto-generated method stub
-		return super.nullConst(ast, arg);
+		ast.type = Symbol.ClassSymbol.nullType;
+		return ast.type;
 	}
 
 	@Override

@@ -21,6 +21,7 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	private SymbolTable globalSymboltable;
 	private SymbolTable <Symbol.VariableSymbol> localSymbolTable;
 	private ExprTypeChecker etc;
+	private Symbol.MethodSymbol currentMethod;
 
 	@Override
 	public Void visit(Ast ast, Void arg) {
@@ -36,8 +37,15 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 
 	@Override
 	public Void assign(Assign ast, Void arg) {
-		// TODO Auto-generated method stub
-		return super.assign(ast, arg);
+		Symbol.TypeSymbol leftType = etc.visit(ast.left(), localSymbolTable);
+        Symbol.TypeSymbol rightType = etc.visit(ast.right(), localSymbolTable);
+        
+        
+        if (!rightType.isSubType(leftType)) {
+            throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "Assignment must have compatible types.");
+        }
+        
+		return arg;
 	}
 
 	@Override
@@ -72,12 +80,11 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 
 	@Override
 	public Void ifElse(IfElse ast, Void arg) {
-		// TODO Auto-generated method stub
 		
 		Symbol.TypeSymbol conditionType = etc.visit(ast.condition(), localSymbolTable);
 		
 		if (!conditionType.equals(Symbol.PrimitiveTypeSymbol.booleanType)) {
-            throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "ifelse requires cond to be of type boolean");
+            throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "ifelse requires condition to be of type boolean");
         }
 		
 		visit(ast.then(), arg);
@@ -87,14 +94,17 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 
 	@Override
 	public Void returnStmt(ReturnStmt ast, Void arg) {
-		// TODO Auto-generated method stub
-		return super.returnStmt(ast, arg);
+		ast.arg().type = etc.visit(ast.arg(), localSymbolTable);
+		 if (!ast.arg().type.isSubType(currentMethod.returnType)) {
+	            throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "ReturnType is not a subtype");
+	        }
+		return arg;
 	}
 
 	@Override
 	public Void methodCall(MethodCall ast, Void arg) {
-		// TODO Auto-generated method stub
-		return super.methodCall(ast, arg);
+		etc.visit(ast.getMethodCallExpr(), localSymbolTable);
+		return arg;
 	}
 
 	@Override
@@ -111,8 +121,12 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 
 	@Override
 	public Void whileLoop(WhileLoop ast, Void arg) {
-		// TODO Auto-generated method stub
-		return super.whileLoop(ast, arg);
+		Symbol.TypeSymbol conditionType = etc.visit(ast.condition(), localSymbolTable);
+
+        if (!conditionType.equals(Symbol.PrimitiveTypeSymbol.booleanType)) {
+            throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "while requires condition to be of type boolean");
+        }
+		return visit(ast.body(),arg);
 	}
 	
 	

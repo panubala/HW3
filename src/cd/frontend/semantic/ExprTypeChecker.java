@@ -113,8 +113,8 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable<
 
 	@Override
 	public TypeSymbol thisRef(ThisRef ast, SymbolTable<VariableSymbol> arg) {
-		// TODO Auto-generated method stub
-		return super.thisRef(ast, arg);
+		ast.type = ((Symbol.VariableSymbol) arg.get("this")).type;
+		return ast.type;
 	}
 
 	@Override

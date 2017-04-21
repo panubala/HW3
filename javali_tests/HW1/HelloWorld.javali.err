@@ -4,9 +4,6 @@ ClassDecl (name: Main, superClass: Object)
 | MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
 | | Seq ()
 | | Seq ()
-| | | BuiltInWrite ()
-| | | | IntConst (value: 53110)
-| | | BuiltInWriteln ()
 
 Test failed because an exception was thrown:
     null

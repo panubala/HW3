@@ -1,5 +1,7 @@
 package cd.frontend.semantic;
 
+import java.util.Map;
+
 import cd.ir.Ast;
 import cd.ir.Ast.Assign;
 import cd.ir.Ast.BuiltInWrite;
@@ -15,6 +17,7 @@ import cd.ir.Ast.VarDecl;
 import cd.ir.Ast.WhileLoop;
 import cd.ir.AstVisitor;
 import cd.ir.Symbol;
+import cd.ir.Symbol.ClassSymbol;
 
 //TODO Void, Void?
 public class StmtTypeChecker extends AstVisitor<Void, Void> {
@@ -22,6 +25,12 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	private SymbolTable <Symbol.VariableSymbol> localSymbolTable;
 	private ExprTypeChecker etc;
 	private Symbol.MethodSymbol currentMethod;
+	private Map<String, Symbol.MethodSymbol> methods;
+	
+	public  StmtTypeChecker(Symbol.ClassSymbol classSymbol) {
+		// TODO Auto-generated constructor stub
+		this.methods = classSymbol.methods;
+	}
 
 	@Override
 	public Void visit(Ast ast, Void arg) {
@@ -67,14 +76,22 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	}
 
 	@Override
-	public Void methodDecl(MethodDecl ast, Void arg) {
-		// TODO Auto-generated method stub
-		return super.methodDecl(ast, arg);
+	public Void methodDecl(MethodDecl ast, Void arg) {		
+		currentMethod = methods.get(ast.name);
+		localSymbolTable = new SymbolTable<>();
+		
+		Void result = visit(ast, null);
+		
+		currentMethod = null;
+		localSymbolTable = null;
+		
+		return result;
 	}
 
 	@Override
 	public Void varDecl(VarDecl ast, Void arg) {
 		// TODO Auto-generated method stub
+		
 		return super.varDecl(ast, arg);
 	}
 

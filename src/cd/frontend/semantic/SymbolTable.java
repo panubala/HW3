@@ -7,7 +7,7 @@ import cd.ir.Symbol;
 
 public class SymbolTable<S extends Symbol>{
 
-		private SymbolTable table;
+		private SymbolTable <? extends Symbol> table;
 		private Map<String, S> symbolTable = new HashMap<>();
 		
 		public SymbolTable(){
@@ -19,13 +19,17 @@ public class SymbolTable<S extends Symbol>{
 		}
 		
 		public Symbol get(String string){
-			if (table != null){
+			S key = symbolTable.get(string);
+			if (table != null && key == null){
 				return table.get(string);
 			}
-			S key = symbolTable.get(string);
-			
+
 			return key;
 			
+		}
+		
+		public void put(S symbol) {
+		        symbolTable.put(symbol.name, symbol);
 		}
 		
 

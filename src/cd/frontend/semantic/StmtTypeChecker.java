@@ -1,5 +1,6 @@
 package cd.frontend.semantic;
 
+import java.util.List;
 import java.util.Map;
 
 import cd.ir.Ast;
@@ -31,6 +32,8 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 		// TODO Auto-generated constructor stub
 		this.methods = classSymbol.methods;
 	}
+	
+	
 
 	@Override
 	public Void visit(Ast ast, Void arg) {

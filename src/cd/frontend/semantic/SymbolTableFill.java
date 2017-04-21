@@ -1,6 +1,8 @@
 package cd.frontend.semantic;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import cd.ir.Ast;
 import cd.ir.Ast.Assign;
@@ -16,6 +18,7 @@ import cd.ir.Symbol.VariableSymbol.Kind;
 public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Kind>  {
 	
 	private SymbolTable<Symbol.TypeSymbol> symbolTable;
+	private Set<String> classNames = new HashSet<>();
 	
 	public SymbolTableFill(SymbolTable<Symbol.TypeSymbol> symbolTable){
 		this.symbolTable = symbolTable;
@@ -37,11 +40,17 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 		// TODO Auto-generated method stub
 		ast.sym.superClass = (Symbol.ClassSymbol) undeclaredType(ast.superClass);
 		
+		System.out.println("Passed SuperClass");
+		
 		//TODO:Duplicates
 		for (Ast.MethodDecl methodDecl : ast.methods()) {
 			Symbol.MethodSymbol method = (Symbol.MethodSymbol) visit(methodDecl, null);
+			System.out.println("Done");
             ast.sym.methods.put(method.name, method);
+            System.out.println("Method putted");
 		}
+		
+		System.out.println("Added MethodDecl");
 		
 		//TODO: Duplicates
 		for (Ast.VarDecl varDecl : ast.fields()) {
@@ -60,7 +69,7 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 	@Override
 	public Symbol methodDecl(MethodDecl ast, Kind arg) {
 		// TODO Auto-generated method stub
-		return super.methodDecl(ast, arg);
+		return ast.sym;
 	}
 
 	@Override
@@ -77,9 +86,33 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 	}
 	
 	public void fillTable(List<Ast.ClassDecl> classDecls) {
+		
+		System.out.println("Number of classes: " + classDecls.size());
+		
+		System.out.println("Putting Built-in");
+		symbolTable.put(Symbol.TypeSymbol.PrimitiveTypeSymbol.intType);
+		symbolTable.put(Symbol.TypeSymbol.PrimitiveTypeSymbol.booleanType);
+		symbolTable.put(Symbol.TypeSymbol.PrimitiveTypeSymbol.voidType);
+		symbolTable.put(new Symbol.ArrayTypeSymbol(Symbol.TypeSymbol.PrimitiveTypeSymbol.intType));
+		symbolTable.put(new Symbol.ArrayTypeSymbol(Symbol.TypeSymbol.PrimitiveTypeSymbol.booleanType));
+		symbolTable.put(Symbol.TypeSymbol.ClassSymbol.objectType);
+		symbolTable.put(Symbol.TypeSymbol.ClassSymbol.nullType);
+		symbolTable.put(new Symbol.ArrayTypeSymbol(Symbol.TypeSymbol.ClassSymbol.objectType));
+		
 		for (Ast.ClassDecl classDecl : classDecls) {
+			classNames.add(classDecl.name);
+			classDecl.sym = new Symbol.ClassSymbol(classDecl);
+			symbolTable.put(classDecl.sym);
+			symbolTable.put(new Symbol.ArrayTypeSymbol(classDecl.sym));
+		}
+		
+		for (Ast.ClassDecl classDecl : classDecls) {
+			System.out.println("Filling table...");
             visit(classDecl, null);
+            System.out.println("Returned visit");
         }
+		
+		System.out.println("Table filled");
 		
 	}
 

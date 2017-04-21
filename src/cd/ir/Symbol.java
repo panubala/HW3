@@ -17,6 +17,8 @@ public abstract class Symbol {
 
 		public abstract boolean isReferenceType();
 		
+		public abstract boolean isSubType(TypeSymbol type);
+		
 		public String toString() {
 			return name;
 		}
@@ -37,6 +39,11 @@ public abstract class Symbol {
 		public boolean isReferenceType() {
 			return false;
 		}
+		
+		public boolean isSubType(TypeSymbol type) {
+			return type == this;
+		}
+		
 	}
 	
 	public static class ArrayTypeSymbol extends TypeSymbol {
@@ -49,6 +56,10 @@ public abstract class Symbol {
 		
 		public boolean isReferenceType() {
 			return true;
+		}
+		
+		public boolean isSubType(TypeSymbol type) {
+			return type == this || type == ClassSymbol.objectType;
 		}
 		
 	}
@@ -82,6 +93,12 @@ public abstract class Symbol {
 		public boolean isReferenceType() {
 			return true;
 		}
+		
+		public boolean isSubType(TypeSymbol type) {
+	            //TODO
+			return true;
+	         
+	    }
 		
 		public VariableSymbol getField(String name) {
 			VariableSymbol fsym = fields.get(name);

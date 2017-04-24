@@ -24,16 +24,16 @@ import cd.ir.Symbol.ClassSymbol;
 public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	private SymbolTable globalSymboltable;
 	private SymbolTable <Symbol.VariableSymbol> localSymbolTable;
-	private ExprTypeChecker etc;
+	private ExprTypeChecker exprChecker;
 	private Symbol.MethodSymbol currentMethod;
 	private Map<String, Symbol.MethodSymbol> methods;
 	
-	public  StmtTypeChecker(Symbol.ClassSymbol classSymbol) {
+	public  StmtTypeChecker(Symbol.ClassSymbol classSymbol, SymbolTable symbolTable) {
 		// TODO Auto-generated constructor stub
 		this.methods = classSymbol.methods;
-	}
-	
-	
+		this.localSymbolTable = symbolTable;
+		this.exprChecker = new ExprTypeChecker();
+	}	
 
 	@Override
 	public Void visit(Ast ast, Void arg) {
@@ -49,10 +49,13 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 
 	@Override
 	public Void assign(Assign ast, Void arg) {
-		Symbol.TypeSymbol leftType = etc.visit(ast.left(), localSymbolTable);
-        Symbol.TypeSymbol rightType = etc.visit(ast.right(), localSymbolTable);
+		System.out.println("==StmtCheck - Assign");
+		Symbol.TypeSymbol leftType = exprChecker.visit(ast.left(), localSymbolTable);
+        Symbol.TypeSymbol rightType = exprChecker.visit(ast.right(), localSymbolTable);
         
-        
+        System.out.println(rightType.name);
+
+        System.out.println(leftType.name);
         if (!rightType.isSubType(leftType)) {
             throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "Assignment must have compatible types.");
         }
@@ -62,28 +65,33 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 
 	@Override
 	public Void builtInWrite(BuiltInWrite ast, Void arg) {
+		System.out.println("==StmtCheck - Write");
 		// TODO Auto-generated method stub
 		return super.builtInWrite(ast, arg);
 	}
 
 	@Override
 	public Void builtInWriteln(BuiltInWriteln ast, Void arg) {
+		System.out.println("==StmtCheck - Writeln");
 		// TODO Auto-generated method stub
 		return super.builtInWriteln(ast, arg);
 	}
 
 	@Override
 	public Void classDecl(ClassDecl ast, Void arg) {
+		System.out.println("==StmtCheck - classDecl");
 		// TODO Auto-generated method stub
 		return super.classDecl(ast, arg);
 	}
 
 	@Override
-	public Void methodDecl(MethodDecl ast, Void arg) {		
+	public Void methodDecl(MethodDecl ast, Void arg) {
+		System.out.println("==StmtCheck - MethodDecl");
 		currentMethod = methods.get(ast.name);
 		localSymbolTable = new SymbolTable<>();
 		
-		Void result = visit(ast, null);
+		//visit(ast.decls(), null); //TODO ?
+		Void result = visit(ast.body(), null);
 		
 		currentMethod = null;
 		localSymbolTable = null;
@@ -93,6 +101,7 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 
 	@Override
 	public Void varDecl(VarDecl ast, Void arg) {
+		System.out.println("==StmtCheck - VarDecl");
 		// TODO Auto-generated method stub
 		
 		return super.varDecl(ast, arg);
@@ -100,8 +109,9 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 
 	@Override
 	public Void ifElse(IfElse ast, Void arg) {
+		System.out.println("==StmtCheck - IfElse");
 		
-		Symbol.TypeSymbol conditionType = etc.visit(ast.condition(), localSymbolTable);
+		Symbol.TypeSymbol conditionType = exprChecker.visit(ast.condition(), localSymbolTable);
 		
 		if (!conditionType.equals(Symbol.PrimitiveTypeSymbol.booleanType)) {
             throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "ifelse requires condition to be of type boolean");
@@ -114,7 +124,8 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 
 	@Override
 	public Void returnStmt(ReturnStmt ast, Void arg) {
-		ast.arg().type = etc.visit(ast.arg(), localSymbolTable);
+		System.out.println("==StmtCheck - Return");
+		ast.arg().type = exprChecker.visit(ast.arg(), localSymbolTable);
 		 if (!ast.arg().type.isSubType(currentMethod.returnType)) {
 	            throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "ReturnType is not a subtype");
 	        }
@@ -123,25 +134,29 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 
 	@Override
 	public Void methodCall(MethodCall ast, Void arg) {
-		etc.visit(ast.getMethodCallExpr(), localSymbolTable);
+		System.out.println("==StmtCheck - MethodCall");
+		exprChecker.visit(ast.getMethodCallExpr(), localSymbolTable);
 		return arg;
 	}
 
 	@Override
 	public Void nop(Nop ast, Void arg) {
+		System.out.println("==StmtCheck - nop");
 		// TODO Auto-generated method stub
 		return super.nop(ast, arg);
 	}
 
 	@Override
 	public Void seq(Seq ast, Void arg) {
+		System.out.println("==StmtCheck - Seq");
 		// TODO Auto-generated method stub
 		return super.seq(ast, arg);
 	}
 
 	@Override
 	public Void whileLoop(WhileLoop ast, Void arg) {
-		Symbol.TypeSymbol conditionType = etc.visit(ast.condition(), localSymbolTable);
+		System.out.println("==StmtCheck - WhileLoop");
+		Symbol.TypeSymbol conditionType = exprChecker.visit(ast.condition(), localSymbolTable);
 
         if (!conditionType.equals(Symbol.PrimitiveTypeSymbol.booleanType)) {
             throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "while requires condition to be of type boolean");

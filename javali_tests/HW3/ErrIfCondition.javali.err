@@ -1,4 +1,4 @@
-Debug information for file: javali_tests/HW3/ErrIfCondition.javali
+Debug information for file: javali_tests\HW3\ErrIfCondition.javali
 AST Resulting From Parsing Stage:
 ClassDecl (name: Main, superClass: Object)
 | MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)

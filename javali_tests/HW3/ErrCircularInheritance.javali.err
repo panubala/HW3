@@ -1,4 +1,4 @@
-Debug information for file: javali_tests/HW3/ErrCircularInheritance.javali
+Debug information for file: javali_tests\HW3\ErrCircularInheritance.javali
 AST Resulting From Parsing Stage:
 ClassDecl (name: Foo, superClass: Bar)
 ClassDecl (name: Bar, superClass: Foo)

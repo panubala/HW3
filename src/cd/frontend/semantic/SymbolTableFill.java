@@ -12,6 +12,7 @@ import cd.ir.Ast.ReturnStmt;
 import cd.ir.Ast.VarDecl;
 import cd.ir.AstVisitor;
 import cd.ir.Symbol;
+import cd.ir.Symbol.MethodSymbol;
 import cd.ir.Symbol.TypeSymbol;
 import cd.ir.Symbol.VariableSymbol.Kind;
 
@@ -25,7 +26,7 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 	}
 	
 	public Symbol.TypeSymbol undeclaredType(String type){
-		
+		System.out.println("==Filling - undeClared Type");
 		Symbol.TypeSymbol typeSymbol = (TypeSymbol) symbolTable.get(type);
 		
 		if (typeSymbol == null) {
@@ -37,6 +38,7 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 	//TODO:inheritence
 	@Override
 	public Symbol classDecl(ClassDecl ast, Kind arg) {
+		System.out.println("==Filling - ClassDecl");
 		// TODO Auto-generated method stub
 		ast.sym.superClass = (Symbol.ClassSymbol) undeclaredType(ast.superClass);
 		
@@ -45,8 +47,10 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 		//TODO:Duplicates
 		for (Ast.MethodDecl methodDecl : ast.methods()) {
 			Symbol.MethodSymbol method = (Symbol.MethodSymbol) visit(methodDecl, null);
-			System.out.println("Done");
-            ast.sym.methods.put(method.name, method);
+			if(ast.sym.methods.containsKey(method.name))
+				throw new SemanticFailure(SemanticFailure.Cause.DOUBLE_DECLARATION);
+            
+			ast.sym.methods.put(method.name, method);
             System.out.println("Method putted");
 		}
 		
@@ -62,25 +66,28 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 
 	@Override
 	public Symbol assign(Assign ast, Kind arg) {
+		System.out.println("==Filling - Assign");
 		// TODO Auto-generated method stub
 		return super.assign(ast, arg);
 	}
 
 	@Override
 	public Symbol methodDecl(MethodDecl ast, Kind arg) {
-		// TODO Auto-generated method stub
-		return ast.sym;
+		System.out.println("==Filling - MethodDecl");
+		return new MethodSymbol(ast);
 	}
 
 	@Override
 	public Symbol varDecl(VarDecl ast, Kind arg) {
+		System.out.println("==Filling - VarDecl");
 		Symbol.TypeSymbol typeSymbol = undeclaredType(ast.type);
-		ast.sym = new Symbol.VariableSymbol(ast.name, typeSymbol,arg);
+		ast.sym = new Symbol.VariableSymbol(ast.name, typeSymbol,arg); //TODO do we have to set ast.sym? or can we just simply retrun new Symbol
 		return ast.sym;
 	}
 
 	@Override
 	public Symbol returnStmt(ReturnStmt ast, Kind arg) {
+		System.out.println("==Filling - ReturnStmt");
 		// TODO Auto-generated method stub
 		return super.returnStmt(ast, arg);
 	}
@@ -100,6 +107,10 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 		symbolTable.put(new Symbol.ArrayTypeSymbol(Symbol.TypeSymbol.ClassSymbol.objectType));
 		
 		for (Ast.ClassDecl classDecl : classDecls) {
+			
+			if(classNames.contains(classDecl.name))
+				throw new SemanticFailure(SemanticFailure.Cause.DOUBLE_DECLARATION);
+			
 			classNames.add(classDecl.name);
 			classDecl.sym = new Symbol.ClassSymbol(classDecl);
 			symbolTable.put(classDecl.sym);

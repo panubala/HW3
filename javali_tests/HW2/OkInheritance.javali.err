@@ -1,4 +1,4 @@
-Debug information for file: javali_tests/HW2/OkInheritance.javali
+Debug information for file: javali_tests\HW2\OkInheritance.javali
 AST Resulting From Parsing Stage:
 ClassDecl (name: Base, superClass: Object)
 ClassDecl (name: Extends, superClass: Base)

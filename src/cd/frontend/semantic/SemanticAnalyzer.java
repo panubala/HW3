@@ -20,10 +20,7 @@ public class SemanticAnalyzer {
 	public void check(List<ClassDecl> classDecls) throws SemanticFailure {
 		{
 			System.out.println("checking...");
-//			new TypeChecker(globalSymbolTable).check(classDecls);
-			new SymbolTableFill(globalSymbolTable).fillTable(classDecls);
-			
-			
+			new SymbolTableFill(globalSymbolTable).fillTable(classDecls);		
 			
 			Symbol.ClassSymbol mainClassSymbol = (Symbol.ClassSymbol) globalSymbolTable.get("Main");
 			
@@ -41,6 +38,8 @@ public class SemanticAnalyzer {
 			}
 			
 			System.out.println("Done with Start Point");
+			
+			new TypeChecker(globalSymbolTable).check(classDecls);
 		}
 	}
 

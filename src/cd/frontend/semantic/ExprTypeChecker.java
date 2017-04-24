@@ -104,8 +104,11 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable<
 	@Override
 	public TypeSymbol newObject(NewObject ast, SymbolTable<VariableSymbol> arg) {
 		System.out.println("==ExprCheck - NewObject");
-		// TODO Auto-generated method stub
-		return super.newObject(ast, arg);
+		
+		if(!arg.containsKey(ast.typeName))
+            throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_TYPE);
+		
+		return (TypeSymbol) arg.get(ast.typeName);
 	}
 
 	@Override

@@ -41,6 +41,10 @@ public class SemanticAnalyzer {
 			
 			System.out.println("Done with Start Point");
 			
+			
+			globalSymbolTable.print();
+			
+			
 			new TypeChecker(globalSymbolTable).check(classDecls);
 		}
 	}

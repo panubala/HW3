@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cd.ir.Symbol;
+import cd.ir.Symbol.TypeSymbol;
+import cd.ir.Symbol.VariableSymbol;
 
 public class SymbolTable<S extends Symbol>{
 
@@ -38,6 +40,20 @@ public class SymbolTable<S extends Symbol>{
 		
 		public boolean containsKey(String s){
 			return symbolTable.containsKey(s);
+		}
+		
+		public boolean containsType(TypeSymbol type){
+			return symbolTable.containsValue(type);
+		}
+		
+		public void print(){
+			System.out.println("=====Table:=====");
+			for (String name: symbolTable.keySet()){
+	            String key =name.toString();
+	            String value = symbolTable.get(name).toString();  
+	            System.out.println(key + " -> " + value);
+			} 
+			System.out.println("================");
 		}
 		
 

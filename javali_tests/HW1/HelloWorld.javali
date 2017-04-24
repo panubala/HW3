@@ -1,10 +1,11 @@
 /* Kind of like hello world */
 class Main {
    void main() {
-     int a;
-     a = 5;
-     b = 6;
+     b = new B();
+     b = c;
+     //a = 5;
      // write(53110);
      // writeln();    
    }
 }
+

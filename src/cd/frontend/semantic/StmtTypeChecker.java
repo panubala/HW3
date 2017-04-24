@@ -44,6 +44,7 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
         Symbol.TypeSymbol rightType = exprChecker.visit(ast.right(), TypeChecker.methodTable.get(currentClass+currentMethod));
         
         System.out.println("Left Type: "+ leftType.name + ", Right Type: " + rightType.name);
+        System.out.println(rightType.isSubType(leftType));
         
         if (!rightType.isSubType(leftType)) {
             throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "Assignment must have compatible types.");

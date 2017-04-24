@@ -104,8 +104,9 @@ public abstract class Symbol {
 			return true;
 		}
 		
-		public boolean isSubType(TypeSymbol type) {
-	            //TODO
+		public boolean isSubType(TypeSymbol type) {  
+			
+			//TODO
 			return true;
 	         
 	    }

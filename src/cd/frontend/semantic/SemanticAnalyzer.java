@@ -27,6 +27,7 @@ public class SemanticAnalyzer {
 			//new SymbolTableFill(globalScopeSymbolTable).fillTable(classDecls);		
 			new SymbolTableFill(globalSymbolTable, globalClassTable, globalMethodTable).fillTable(classDecls);		
 			
+			////Printing:
 			System.out.println("Global Table:");
 			System.out.println("-------------");
 			globalSymbolTable.print();
@@ -50,7 +51,7 @@ public class SemanticAnalyzer {
 		        System.out.println("-----"+pair.getKey()+"-----");
 		        ((SymbolTable) pair.getValue()).print();
 		    }
-			
+			//////////////////////////////////////////////////////////
 			
 			Symbol.MethodSymbol mainMethodSymbol = (Symbol.MethodSymbol) globalClassTable.get("Main").get("main");
 			

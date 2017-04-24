@@ -12,8 +12,8 @@ public class TypeChecker { // TODO why TypeChecker? Does it only check types?
 	private StmtTypeChecker stmtChecker;
 	
 	static public SymbolTable symbolTable;
-	static public HashMap<String, SymbolTable> classTable;
-	static public HashMap<String, SymbolTable> methodTable;
+	static public HashMap<String, SymbolTable> classTable;	//Key: "className"
+	static public HashMap<String, SymbolTable> methodTable; //Key: "className" + "methodName"
 
 	public TypeChecker(SymbolTable symbolTable, HashMap<String, SymbolTable> classTable,
 			HashMap<String, SymbolTable> methodTable) {

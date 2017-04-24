@@ -1,3 +1,5 @@
+Debug information for file: javali_tests\HW1\HelloWorld.javali
+AST Resulting From Parsing Stage:
 ClassDecl (name: Main, superClass: Object)
 | VarDecl (name: a, type: int)
 | MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
@@ -15,3 +17,14 @@ ClassDecl (name: Main, superClass: Object)
 | | | | Var (name: a)
 | | | | IntConst (value: 5)
 ClassDecl (name: B, superClass: Object)
+Error message from reference is: Type B cannot be assigned to int
+
+Phase semantic failed because we expected to see:
+TYPE_ERROR
+But we actually saw:
+OK
+The difference is:
+At line   1 /   1:
+< TYPE_ERROR
+> OK
+

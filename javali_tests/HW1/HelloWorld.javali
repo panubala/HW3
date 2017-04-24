@@ -10,9 +10,7 @@ class Main {
      // write(53110);
      // writeln();    
    }
-   int f() {
-   	int b;
-   }
 }
 class B{
+
 }

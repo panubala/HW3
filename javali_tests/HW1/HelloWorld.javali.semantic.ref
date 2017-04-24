@@ -1,2 +1,2 @@
-NO_SUCH_VARIABLE
-No variable b was found
+TYPE_ERROR
+Type B cannot be assigned to int

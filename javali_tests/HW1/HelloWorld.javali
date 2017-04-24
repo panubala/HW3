@@ -2,11 +2,12 @@
 
 
 class Main  {
-   
+		int a;
+		a = [9,4];
+   		write(hallo);
      // write(53110);
      // writeln();    
    }
    
- class A exends Main {}
-}
+
 

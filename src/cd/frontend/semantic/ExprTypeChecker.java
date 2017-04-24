@@ -17,6 +17,7 @@ import cd.ir.Ast.UnaryOp;
 import cd.ir.Ast.Var;
 import cd.ir.ExprVisitor;
 import cd.ir.Symbol;
+import cd.ir.Symbol.PrimitiveTypeSymbol;
 import cd.ir.Symbol.TypeSymbol;
 import cd.ir.Symbol.VariableSymbol;
 
@@ -114,8 +115,19 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable<
 	@Override
 	public TypeSymbol newArray(NewArray ast, SymbolTable<VariableSymbol> arg) {
 		System.out.println("==ExprCheck - NewArray");
-		// TODO Auto-generated method stub
-		return super.newArray(ast, arg);
+		Symbol.TypeSymbol type = visit(ast.arg(), arg);
+		
+//		if (!type.equals(PrimitiveTypeSymbol.intType)) {
+//            throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
+//        }
+		
+		Symbol.TypeSymbol typeSym = (Symbol.TypeSymbol) arg.get(ast.typeName);
+		
+		if (typeSym == null) {
+			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_TYPE);
+        }
+	
+		return typeSym;
 	}
 
 	@Override
@@ -149,5 +161,7 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable<
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE, "No Variable " + ast.name + " was found");
 		return (TypeSymbol) arg.get(ast.name);
 	}
+	
+	
 
 }

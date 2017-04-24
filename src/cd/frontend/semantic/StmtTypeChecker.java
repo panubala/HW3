@@ -19,6 +19,7 @@ import cd.ir.Ast.WhileLoop;
 import cd.ir.AstVisitor;
 import cd.ir.Symbol;
 import cd.ir.Symbol.ClassSymbol;
+import cd.ir.Symbol.PrimitiveTypeSymbol;
 
 //TODO Void, Void?
 public class StmtTypeChecker extends AstVisitor<Void, Void> {
@@ -35,17 +36,7 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 		this.exprChecker = new ExprTypeChecker();
 	}	
 
-	@Override
-	public Void visit(Ast ast, Void arg) {
-		// TOD Auto-generated method stub
-		return super.visit(ast, arg);
-	}
 
-	@Override
-	public Void visitChildren(Ast ast, Void arg) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ast, arg);
-	}
 
 	@Override
 	public Void assign(Assign ast, Void arg) {
@@ -65,23 +56,15 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	@Override
 	public Void builtInWrite(BuiltInWrite ast, Void arg) {
 		System.out.println("==StmtCheck - Write");
-		// TODO Auto-generated method stub
-		return super.builtInWrite(ast, arg);
+		
+		Symbol.TypeSymbol type = exprChecker.visit(ast.arg(), localSymbolTable);
+		
+		if (!type.equals(PrimitiveTypeSymbol.intType)) {
+            throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
+        }
+		return arg;
 	}
 
-	@Override
-	public Void builtInWriteln(BuiltInWriteln ast, Void arg) {
-		System.out.println("==StmtCheck - Writeln");
-		// TODO Auto-generated method stub
-		return super.builtInWriteln(ast, arg);
-	}
-
-	@Override
-	public Void classDecl(ClassDecl ast, Void arg) {
-		System.out.println("==StmtCheck - classDecl");
-		// TODO Auto-generated method stub
-		return super.classDecl(ast, arg);
-	}
 
 	@Override
 	public Void methodDecl(MethodDecl ast, Void arg) {
@@ -98,13 +81,6 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 		return result;
 	}
 
-	@Override
-	public Void varDecl(VarDecl ast, Void arg) {
-		System.out.println("==StmtCheck - VarDecl");
-		// TODO Auto-generated method stub
-		
-		return super.varDecl(ast, arg);
-	}
 
 	@Override
 	public Void ifElse(IfElse ast, Void arg) {
@@ -138,19 +114,6 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 		return arg;
 	}
 
-	@Override
-	public Void nop(Nop ast, Void arg) {
-		System.out.println("==StmtCheck - nop");
-		// TODO Auto-generated method stub
-		return super.nop(ast, arg);
-	}
-
-	@Override
-	public Void seq(Seq ast, Void arg) {
-		System.out.println("==StmtCheck - Seq");
-		// TODO Auto-generated method stub
-		return super.seq(ast, arg);
-	}
 
 	@Override
 	public Void whileLoop(WhileLoop ast, Void arg) {

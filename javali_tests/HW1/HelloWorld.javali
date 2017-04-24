@@ -1,11 +1,18 @@
 /* Kind of like hello world */
 class Main {
+   int a;
    void main() {
+     int a;
+     B b;
      b = new B();
-     b = c;
-     //a = 5;
+     a=b;
+     a = 5;
      // write(53110);
      // writeln();    
    }
+   int f() {
+   	int b;
+   }
 }
-
+class B{
+}

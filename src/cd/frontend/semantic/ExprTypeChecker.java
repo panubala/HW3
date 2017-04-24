@@ -105,10 +105,11 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable<
 	public TypeSymbol newObject(NewObject ast, SymbolTable<VariableSymbol> arg) {
 		System.out.println("==ExprCheck - NewObject");
 		
-		if(!arg.containsKey(ast.typeName))
-            throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_TYPE);
-		
-		return (TypeSymbol) arg.get(ast.typeName);
+		arg.print();
+		System.out.println();
+//		if(!arg.containsKey(ast.typeName)) //should be checked in the filler
+//            throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_TYPE);
+		return (TypeSymbol) TypeChecker.symbolTable.get(ast.typeName);
 	}
 
 	@Override
@@ -144,6 +145,9 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable<
 		System.out.println("==ExprCheck - Variable");
 		// TODO Auto-generated method stub
 		//System.out.println(ast.type.name);
+		
+		arg.print();
+		
 		System.out.println(arg.get(ast.name));
 		if(!arg.containsKey(ast.name))
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE, "No Variable " + ast.name + " was found");

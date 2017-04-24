@@ -25,9 +25,7 @@ public class SymbolTable<S extends Symbol>{
 			if (table != null && key == null){
 				return table.get(string);
 			}
-
 			return key;
-			
 		}
 		
 		public void put(S symbol) {

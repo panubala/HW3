@@ -1,17 +1,20 @@
 package cd.frontend.semantic;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import cd.Main;
-import cd.ToDoException;
 import cd.ir.Ast.ClassDecl;
 import cd.ir.Symbol;
-import cd.ir.Symbol.ClassSymbol;
 
 public class SemanticAnalyzer {
 	
-	public final Main main;
+	public final Main main;	
 	private SymbolTable<Symbol.TypeSymbol> globalSymbolTable = new SymbolTable<>();
+	private HashMap<String, SymbolTable> globalClassTable = new HashMap<>();
+	private HashMap<String, SymbolTable> globalMethodTable = new HashMap<>();
 	
 	public SemanticAnalyzer(Main main) {
 		this.main = main;
@@ -20,21 +23,46 @@ public class SemanticAnalyzer {
 	public void check(List<ClassDecl> classDecls) throws SemanticFailure {
 		{
 			System.out.println("checking...");
-			new SymbolTableFill(globalSymbolTable).fillTable(classDecls);		
+			
+			//new SymbolTableFill(globalScopeSymbolTable).fillTable(classDecls);		
+			new SymbolTableFill(globalSymbolTable, globalClassTable, globalMethodTable).fillTable(classDecls);		
+			
+			System.out.println("Global Table:");
+			System.out.println("-------------");
+			globalSymbolTable.print();
+			System.out.println();
+			
+			System.out.println("Class Table:");
+			System.out.println("-------------");
+			Iterator it = globalClassTable.entrySet().iterator();
+		    while (it.hasNext()) {
+		        Map.Entry pair = (Map.Entry)it.next();
+		        System.out.println("-----"+pair.getKey()+"-----");
+		        ((SymbolTable) pair.getValue()).print();
+		    }
+			System.out.println();
+		    
+		    System.out.println("Method Table:");
+			System.out.println("-------------");
+			it = globalMethodTable.entrySet().iterator();
+		    while (it.hasNext()) {
+		        Map.Entry pair = (Map.Entry)it.next();
+		        System.out.println("-----"+pair.getKey()+"-----");
+		        ((SymbolTable) pair.getValue()).print();
+		    }
 			
 			
-			
-			Symbol.ClassSymbol mainClassSymbol = (Symbol.ClassSymbol) globalSymbolTable.get("Main");
+			Symbol.MethodSymbol mainMethodSymbol = (Symbol.MethodSymbol) globalClassTable.get("Main").get("main");
 			
 			System.out.println("Going to check Start Point...");
 			//Start Point
-			if (mainClassSymbol == null){
+			if (!globalClassTable.containsKey("Main")){
 				System.out.println("No Main Class");
 				throw new SemanticFailure(SemanticFailure.Cause.INVALID_START_POINT, "No Main Class found");
-			}else if (mainClassSymbol.getMethod("main") == null) {
+			}else if (!globalMethodTable.containsKey("Mainmain")) {
 				System.out.println("No Main Method");
 				throw new SemanticFailure(SemanticFailure.Cause.INVALID_START_POINT, "No Main Method found");
-			}else if (mainClassSymbol.getMethod("main").parameters.size() != 0) {
+			}else if (mainMethodSymbol.parameters.size() != 0) {
 				System.out.println("Should be no Parameters in Main Method");
 				throw new SemanticFailure(SemanticFailure.Cause.INVALID_START_POINT, "Should be no Parameters in Main Method");
 			}
@@ -45,7 +73,7 @@ public class SemanticAnalyzer {
 			globalSymbolTable.print();
 			
 			
-			new TypeChecker(globalSymbolTable).check(classDecls);
+			new TypeChecker(globalSymbolTable, globalClassTable, globalMethodTable).check(classDecls);
 		}
 	}
 

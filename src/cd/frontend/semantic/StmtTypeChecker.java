@@ -1,6 +1,5 @@
 package cd.frontend.semantic;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +19,7 @@ import cd.ir.Ast.WhileLoop;
 import cd.ir.AstVisitor;
 import cd.ir.Symbol;
 import cd.ir.Symbol.ClassSymbol;
+import cd.ir.Symbol.PrimitiveTypeSymbol;
 
 //TODO Void, Void?
 public class StmtTypeChecker extends AstVisitor<Void, Void> {
@@ -27,54 +27,43 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	private ExprTypeChecker exprChecker;
 	private String currentMethod;
 	private String currentClass;
-
-	private SymbolTable scopeSymbolTable;
-
-	public StmtTypeChecker(Symbol.ClassSymbol classSymbol) {
+	private Map<String, Symbol.MethodSymbol> methods;
+	
+	public  StmtTypeChecker(Symbol.ClassSymbol classSymbol) {
 		// TODO Auto-generated constructor stub
+		this.methods = classSymbol.methods;
 		this.exprChecker = new ExprTypeChecker();
-	}
+	}	
 
-	@Override
-	public Void visit(Ast ast, Void arg) {
-		// TOD Auto-generated method stub
-		return super.visit(ast, arg);
-	}
 
-	@Override
-	public Void visitChildren(Ast ast, Void arg) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ast, arg);
-	}
 
 	@Override
 	public Void assign(Assign ast, Void arg) {
 		System.out.println("==StmtCheck - Assign");
-		Symbol.TypeSymbol leftType = exprChecker.visit(ast.left(), TypeChecker.methodTable.get(currentClass + currentMethod));
-		Symbol.TypeSymbol rightType = exprChecker.visit(ast.right(), TypeChecker.methodTable.get(currentClass + currentMethod));
-
-		System.out.println("Left Type: " + leftType.name + ", Right Type: " + rightType.name);
-
-		if (!rightType.isSubType(leftType)) {
-			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "Assignment must have compatible types.");
-		}
-
+		Symbol.TypeSymbol leftType = exprChecker.visit(ast.left(), TypeChecker.methodTable.get(currentClass+currentMethod));
+        Symbol.TypeSymbol rightType = exprChecker.visit(ast.right(), TypeChecker.methodTable.get(currentClass+currentMethod));
+        
+        System.out.println("Left Type: "+ leftType.name + ", Right Type: " + rightType.name);
+        
+        if (!rightType.isSubType(leftType)) {
+            throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "Assignment must have compatible types.");
+        }
+        
 		return arg;
 	}
 
 	@Override
 	public Void builtInWrite(BuiltInWrite ast, Void arg) {
 		System.out.println("==StmtCheck - Write");
-		// TODO Auto-generated method stub
-		return super.builtInWrite(ast, arg);
+		
+		Symbol.TypeSymbol type = exprChecker.visit(ast.arg(), TypeChecker.symbolTable);
+		
+		if (!type.equals(PrimitiveTypeSymbol.intType)) {
+            throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
+        }
+		return arg;
 	}
 
-	@Override
-	public Void builtInWriteln(BuiltInWriteln ast, Void arg) {
-		System.out.println("==StmtCheck - Writeln");
-		// TODO Auto-generated method stub
-		return super.builtInWriteln(ast, arg);
-	}
 
 	@Override
 	public Void classDecl(ClassDecl ast, Void arg) {
@@ -141,30 +130,18 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 		return arg;
 	}
 
-	@Override
-	public Void nop(Nop ast, Void arg) {
-		System.out.println("==StmtCheck - nop");
-		// TODO Auto-generated method stub
-		return super.nop(ast, arg);
-	}
-
-	@Override
-	public Void seq(Seq ast, Void arg) {
-		System.out.println("==StmtCheck - Seq");
-		// TODO Auto-generated method stub
-		return super.seq(ast, arg);
-	}
 
 	@Override
 	public Void whileLoop(WhileLoop ast, Void arg) {
 		System.out.println("==StmtCheck - WhileLoop");
 		Symbol.TypeSymbol conditionType = exprChecker.visit(ast.condition(), TypeChecker.symbolTable);
 
-		if (!conditionType.equals(Symbol.PrimitiveTypeSymbol.booleanType)) {
-			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR,
-					"while requires condition to be of type boolean");
-		}
-		return visit(ast.body(), arg);
+        if (!conditionType.equals(Symbol.PrimitiveTypeSymbol.booleanType)) {
+            throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "while requires condition to be of type boolean");
+        }
+		return visit(ast.body(),arg);
 	}
+	
+	
 
 }

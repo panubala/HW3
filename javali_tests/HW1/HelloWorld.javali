@@ -1,11 +1,12 @@
 /* Kind of like hello world */
-class Main {
-   void main() {
-     b = new B();
-     b = c;
-     //a = 5;
+
+
+class Main  {
+   
      // write(53110);
      // writeln();    
    }
+   
+ class A exends Main {}
 }
 

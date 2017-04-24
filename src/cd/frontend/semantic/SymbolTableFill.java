@@ -1,5 +1,7 @@
 package cd.frontend.semantic;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +36,8 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
         }
 		return typeSymbol;
 	}
+	
+	
 
 	//TODO:inheritence
 	@Override
@@ -47,11 +51,13 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 		//TODO:Duplicates
 		for (Ast.MethodDecl methodDecl : ast.methods()) {
 			Symbol.MethodSymbol method = (Symbol.MethodSymbol) visit(methodDecl, null);
+
 			if(ast.sym.methods.containsKey(method.name))
 				throw new SemanticFailure(SemanticFailure.Cause.DOUBLE_DECLARATION);
             
 			ast.sym.methods.put(method.name, method);
             System.out.println("Method putted");
+
 		}
 		
 		System.out.println("Added MethodDecl");
@@ -60,6 +66,8 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 		for (Ast.VarDecl varDecl : ast.fields()) {
 			Symbol.VariableSymbol field = (Symbol.VariableSymbol) visit(varDecl, Symbol.VariableSymbol.Kind.FIELD);
 			ast.sym.fields.put(field.name, field);
+			
+			
 		}
 		return ast.sym;
 	}
@@ -85,8 +93,10 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 	public Symbol varDecl(VarDecl ast, Kind arg) {
 		System.out.println("==Filling - VarDecl");
 		Symbol.TypeSymbol typeSymbol = undeclaredType(ast.type);
+
 		ast.sym = new Symbol.VariableSymbol(ast.name, typeSymbol,arg); //TODO do we have to set ast.sym? or can we just simply retrun new Symbol
 		symbolTable.put(ast.name, typeSymbol);
+
 		return ast.sym;
 	}
 
@@ -107,6 +117,7 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 		symbolTable.put(Symbol.TypeSymbol.PrimitiveTypeSymbol.voidType);
 		symbolTable.put(new Symbol.ArrayTypeSymbol(Symbol.TypeSymbol.PrimitiveTypeSymbol.intType));
 		symbolTable.put(new Symbol.ArrayTypeSymbol(Symbol.TypeSymbol.PrimitiveTypeSymbol.booleanType));
+		
 		symbolTable.put(Symbol.TypeSymbol.ClassSymbol.objectType);
 		symbolTable.put(Symbol.TypeSymbol.ClassSymbol.nullType);
 		symbolTable.put(new Symbol.ArrayTypeSymbol(Symbol.TypeSymbol.ClassSymbol.objectType));
@@ -119,8 +130,11 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 			classNames.add(classDecl.name);
 			classDecl.sym = new Symbol.ClassSymbol(classDecl);
 			symbolTable.put(classDecl.sym);
+
 			//symbolTable.put(new Symbol.ArrayTypeSymbol(classDecl.sym));
+
 		}
+		
 		
 		for (Ast.ClassDecl classDecl : classDecls) {
 			System.out.println("Filling table...");
@@ -129,6 +143,42 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
         }
 		
 		System.out.println("Table filled");
+		
+		inheritanceCheck();
+		
+	}
+	
+	void inheritanceCheck(){
+		
+		System.out.println("==Inheritance check");
+
+		Collection<Symbol.ClassSymbol> classSyms = symbolTable.getAllClassSymbols();
+
+		
+		
+		for(Symbol.ClassSymbol classSym: classSyms){
+			Set<String> checked = new HashSet<>();
+			
+			
+			Symbol.ClassSymbol current = classSym;
+			
+			
+			while(current.superClass != null){
+				
+				if (checked.contains(current.name)){
+					throw new SemanticFailure(SemanticFailure.Cause.CIRCULAR_INHERITANCE, "Circular Inheritance ", current.name);
+				}
+				
+				checked.add(current.name);
+				
+				current = current.superClass;
+			}
+		}
+		
+		
+		
+		
+		
 		
 	}
 

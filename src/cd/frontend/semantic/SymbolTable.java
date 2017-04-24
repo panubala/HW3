@@ -1,5 +1,7 @@
 package cd.frontend.semantic;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,13 +32,37 @@ public class SymbolTable<S extends Symbol>{
 			
 		}
 		
+		public Collection<S> getAllSymbols(){
+			return symbolTable.values();
+		}
+		
+		public Collection<Symbol.ClassSymbol> getAllClassSymbols(){
+			Collection<S> allSymbols = symbolTable.values();
+			
+			ArrayList result = new ArrayList<>();
+
+			
+			for(Symbol s: allSymbols){
+
+				if(s instanceof Symbol.ClassSymbol){
+					result.add(s);
+				}
+			}
+			
+
+			
+			return result;
+		}
+		
 		public void put(S symbol) {
 		        symbolTable.put(symbol.name, symbol);
+		        
 		}
 		
 		public void put(String name, S symbol){
 			symbolTable.put(name, symbol);
 		}
+		
 		
 		public boolean containsKey(String s){
 			return symbolTable.containsKey(s);

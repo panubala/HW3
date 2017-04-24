@@ -68,11 +68,7 @@ public class SemanticAnalyzer {
 				throw new SemanticFailure(SemanticFailure.Cause.INVALID_START_POINT, "Should be no Parameters in Main Method");
 			}
 			
-			System.out.println("Done with Start Point");
-			
-			
-			globalSymbolTable.print();
-			
+			System.out.println("Done with Start Point");			
 			
 			new TypeChecker(globalSymbolTable, globalClassTable, globalMethodTable).check(classDecls);
 		}

@@ -19,13 +19,14 @@ import cd.ir.Ast.WhileLoop;
 import cd.ir.AstVisitor;
 import cd.ir.Symbol;
 import cd.ir.Symbol.ClassSymbol;
+import cd.ir.Symbol.MethodSymbol;
 import cd.ir.Symbol.PrimitiveTypeSymbol;
 
 //TODO Void, Void?
 public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	// private SymbolTable globalSymboltable;
 	private ExprTypeChecker exprChecker;
-	private String currentMethod;
+	private MethodSymbol currentMethod;
 	private String currentClass;
 	private Map<String, Symbol.MethodSymbol> methods;
 	
@@ -40,11 +41,10 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	@Override
 	public Void assign(Assign ast, Void arg) {
 		System.out.println("==StmtCheck - Assign");
-		Symbol.TypeSymbol leftType = exprChecker.visit(ast.left(), TypeChecker.methodTable.get(currentClass+currentMethod));
-        Symbol.TypeSymbol rightType = exprChecker.visit(ast.right(), TypeChecker.methodTable.get(currentClass+currentMethod));
+		Symbol.TypeSymbol leftType = exprChecker.visit(ast.left(), TypeChecker.methodTable.get(currentClass+currentMethod.name));
+        Symbol.TypeSymbol rightType = exprChecker.visit(ast.right(), TypeChecker.methodTable.get(currentClass+currentMethod.name));
         
         System.out.println("Left Type: "+ leftType.name + ", Right Type: " + rightType.name);
-        System.out.println(rightType.isSubType(leftType));
         
         if (!rightType.isSubType(leftType)) {
             throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "Assignment must have compatible types.");
@@ -79,7 +79,8 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	public Void methodDecl(MethodDecl ast, Void arg) {
 		System.out.println("==StmtCheck - MethodDecl");
 
-		currentMethod = ast.name;
+		currentMethod = ast.sym;
+		
 		// localSymbolTable = new SymbolTable<>();
 
 		visit(ast.decls(), null); //TODO ?
@@ -117,10 +118,12 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	@Override
 	public Void returnStmt(ReturnStmt ast, Void arg) {
 		System.out.println("==StmtCheck - Return");
-		ast.arg().type = exprChecker.visit(ast.arg(), TypeChecker.symbolTable);
-//		if (!ast.arg().type.isSubType(currentMethod.returnType)) {
-//			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "ReturnType is not a subtype");
-//		}
+				
+		ast.arg().type = exprChecker.visit(ast.arg(), TypeChecker.methodTable.get(currentClass+currentMethod.name));
+		
+		if (!ast.arg().type.isSubType(currentMethod.returnType)) {
+			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "ReturnType is not a subtype");
+		}
 		return arg;
 	}
 

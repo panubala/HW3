@@ -110,7 +110,10 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 	public Symbol methodDecl(MethodDecl ast, Kind arg) {
 		System.out.println("==Filling - MethodDecl");
 		visit(ast.decls(), arg);
+
 		ast.sym = new MethodSymbol(ast);
+		
+		ast.sym.returnType = (TypeSymbol) globalSymbolTable.get(ast.returnType); //TODO check if type exists
 		return ast.sym;
 	}
 
@@ -129,7 +132,7 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 	@Override
 	public Symbol returnStmt(ReturnStmt ast, Kind arg) {
 		System.out.println("==Filling - ReturnStmt");
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub		
 		return super.returnStmt(ast, arg);
 	}
 

@@ -67,6 +67,8 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 	@Override
 	public Symbol assign(Assign ast, Kind arg) {
 		System.out.println("==Filling - Assign");
+		
+		
 		// TODO Auto-generated method stub
 		return super.assign(ast, arg);
 	}
@@ -74,7 +76,9 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 	@Override
 	public Symbol methodDecl(MethodDecl ast, Kind arg) {
 		System.out.println("==Filling - MethodDecl");
-		return new MethodSymbol(ast);
+		visit(ast.decls(), arg);
+		ast.sym = new MethodSymbol(ast);
+		return ast.sym;
 	}
 
 	@Override
@@ -82,6 +86,7 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 		System.out.println("==Filling - VarDecl");
 		Symbol.TypeSymbol typeSymbol = undeclaredType(ast.type);
 		ast.sym = new Symbol.VariableSymbol(ast.name, typeSymbol,arg); //TODO do we have to set ast.sym? or can we just simply retrun new Symbol
+		symbolTable.put(ast.name, typeSymbol);
 		return ast.sym;
 	}
 
@@ -114,7 +119,7 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 			classNames.add(classDecl.name);
 			classDecl.sym = new Symbol.ClassSymbol(classDecl);
 			symbolTable.put(classDecl.sym);
-			symbolTable.put(new Symbol.ArrayTypeSymbol(classDecl.sym));
+			//symbolTable.put(new Symbol.ArrayTypeSymbol(classDecl.sym));
 		}
 		
 		for (Ast.ClassDecl classDecl : classDecls) {

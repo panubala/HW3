@@ -32,6 +32,14 @@ public class SymbolTable<S extends Symbol>{
 		        symbolTable.put(symbol.name, symbol);
 		}
 		
+		public void put(String name, S symbol){
+			symbolTable.put(name, symbol);
+		}
+		
+		public boolean containsKey(String s){
+			return symbolTable.containsKey(s);
+		}
+		
 
 	
 }

@@ -22,6 +22,8 @@ public class SemanticAnalyzer {
 			System.out.println("checking...");
 			new SymbolTableFill(globalSymbolTable).fillTable(classDecls);		
 			
+			
+			
 			Symbol.ClassSymbol mainClassSymbol = (Symbol.ClassSymbol) globalSymbolTable.get("Main");
 			
 			System.out.println("Going to check Start Point...");

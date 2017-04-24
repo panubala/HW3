@@ -22,7 +22,7 @@ import cd.ir.Symbol.ClassSymbol;
 
 //TODO Void, Void?
 public class StmtTypeChecker extends AstVisitor<Void, Void> {
-	private SymbolTable globalSymboltable;
+	//private SymbolTable globalSymboltable;
 	private SymbolTable <Symbol.VariableSymbol> localSymbolTable;
 	private ExprTypeChecker exprChecker;
 	private Symbol.MethodSymbol currentMethod;
@@ -37,7 +37,7 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 
 	@Override
 	public Void visit(Ast ast, Void arg) {
-		// TODO Auto-generated method stub
+		// TOD Auto-generated method stub
 		return super.visit(ast, arg);
 	}
 
@@ -53,9 +53,8 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 		Symbol.TypeSymbol leftType = exprChecker.visit(ast.left(), localSymbolTable);
         Symbol.TypeSymbol rightType = exprChecker.visit(ast.right(), localSymbolTable);
         
-        System.out.println(rightType.name);
-
-        System.out.println(leftType.name);
+        System.out.println("Left Type: "+ leftType.name + ", Right Type: " + rightType.name);
+        
         if (!rightType.isSubType(leftType)) {
             throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "Assignment must have compatible types.");
         }
@@ -88,7 +87,7 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	public Void methodDecl(MethodDecl ast, Void arg) {
 		System.out.println("==StmtCheck - MethodDecl");
 		currentMethod = methods.get(ast.name);
-		localSymbolTable = new SymbolTable<>();
+		//localSymbolTable = new SymbolTable<>();
 		
 		//visit(ast.decls(), null); //TODO ?
 		Void result = visit(ast.body(), null);

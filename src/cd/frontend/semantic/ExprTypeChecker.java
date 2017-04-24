@@ -140,7 +140,10 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable<
 	public TypeSymbol var(Var ast, SymbolTable<VariableSymbol> arg) {
 		System.out.println("==ExprCheck - Variable");
 		// TODO Auto-generated method stub
+		//System.out.println(ast.type.name);
 		System.out.println(arg.get(ast.name));
+		if(!arg.containsKey(ast.name))
+			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE, "No Variable " + ast.name + " was found");
 		return (TypeSymbol) arg.get(ast.name);
 	}
 

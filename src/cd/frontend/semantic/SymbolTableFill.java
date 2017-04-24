@@ -1,6 +1,8 @@
 package cd.frontend.semantic;
 
 import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,12 +22,17 @@ import cd.ir.Symbol.VariableSymbol.Kind;
 public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Kind> {
 
 	private SymbolTable<Symbol.TypeSymbol> globalSymbolTable;
-	private HashMap<String, SymbolTable> classTables = new HashMap<>(); //Key: ClassNames
-	private HashMap<String, SymbolTable> methodTables = new HashMap<>(); //Key: ClassNames + MethodName
-	
+	private HashMap<String, SymbolTable> classTables = new HashMap<>(); // Key:
+																		// ClassNames
+	private HashMap<String, SymbolTable> methodTables = new HashMap<>(); // Key:
+																			// ClassNames
+																			// +
+																			// MethodName
+
 	private SymbolTable<Symbol.TypeSymbol> currentScopeTable;
 
-	public SymbolTableFill(SymbolTable<Symbol.TypeSymbol> symbolTable, HashMap<String, SymbolTable> globalClassTable, HashMap<String, SymbolTable> globalMethodTable) {
+	public SymbolTableFill(SymbolTable<Symbol.TypeSymbol> symbolTable, HashMap<String, SymbolTable> globalClassTable,
+			HashMap<String, SymbolTable> globalMethodTable) {
 		this.globalSymbolTable = symbolTable;
 		this.classTables = globalClassTable;
 		this.methodTables = globalMethodTable;
@@ -54,11 +61,11 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 		for (Ast.VarDecl varDecl : ast.fields()) {
 			if (classTables.get(ast.name).containsKey(varDecl.name))
 				throw new SemanticFailure(SemanticFailure.Cause.DOUBLE_DECLARATION);
-			
+
 			currentScopeTable = classTables.get(ast.name);
 			Symbol.VariableSymbol field = (Symbol.VariableSymbol) visit(varDecl, Symbol.VariableSymbol.Kind.FIELD);
 
-			//ast.sym.fields.put(field.name, field);
+			// ast.sym.fields.put(field.name, field);
 
 		}
 
@@ -66,20 +73,27 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 		for (Ast.MethodDecl methodDecl : ast.methods()) {
 			if (classTables.get(ast.name).containsKey(methodDecl.name))
 				throw new SemanticFailure(SemanticFailure.Cause.DOUBLE_DECLARATION);
-			
+
 			methodTables.put(ast.name + methodDecl.name, new SymbolTable<>());
-			
+
 			currentScopeTable = methodTables.get(ast.name + methodDecl.name);
-			
+
 			Symbol.MethodSymbol method = (Symbol.MethodSymbol) visit(methodDecl, null);
 			// if(ast.sym.methods.containsKey(method.name))
 			classTables.get(ast.name).put(methodDecl.name, method);
-			
+
 			// ast.sym.methods.put(method.name, method);
 			System.out.println("Method putted");
 		}
 
 		System.out.println("Added MethodDecl");
+
+		// TODO: Duplicates
+		// for (Ast.VarDecl varDecl : ast.fields()) {
+		// Symbol.VariableSymbol field = (Symbol.VariableSymbol) visit(varDecl,
+		// Symbol.VariableSymbol.Kind.FIELD);
+		// ast.sym.fields.put(field.name, field);
+		// }
 
 		return ast.sym;
 	}
@@ -104,11 +118,11 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 	public Symbol varDecl(VarDecl ast, Kind arg) {
 		System.out.println("==Filling - VarDecl");
 		Symbol.TypeSymbol typeSymbol = undeclaredType(ast.type);
+
 		ast.sym = new Symbol.VariableSymbol(ast.name, typeSymbol, arg);
 
 		System.out.println(typeSymbol.name);
 		currentScopeTable.put(ast.name, typeSymbol);
-		
 		return ast.sym;
 	}
 
@@ -152,6 +166,34 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 		}
 
 		System.out.println("Table filled");
+
+		inheritanceCheck();
+
+	}
+
+	void inheritanceCheck() {
+
+		System.out.println("==Inheritance check");
+
+		Collection<Symbol.ClassSymbol> classSyms = globalSymbolTable.getAllClassSymbols();
+
+		for (Symbol.ClassSymbol classSym : classSyms) {
+			Set<String> checked = new HashSet<>();
+
+			Symbol.ClassSymbol current = classSym;
+
+			while (current.superClass != null) {
+
+				if (checked.contains(current.name)) {
+					throw new SemanticFailure(SemanticFailure.Cause.CIRCULAR_INHERITANCE, "Circular Inheritance ",
+							current.name);
+				}
+
+				checked.add(current.name);
+
+				current = current.superClass;
+			}
+		}
 
 	}
 

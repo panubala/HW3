@@ -20,6 +20,7 @@ public class TypeChecker { // TODO why TypeChecker? Does it only check types?
 		this.symbolTable = symbolTable;
 		this.classTable = classTable;
 		this.methodTable = methodTable;
+		
 	}
 
 	public void check(List<Ast.ClassDecl> classDecls) {

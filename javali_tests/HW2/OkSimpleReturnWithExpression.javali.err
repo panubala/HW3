@@ -48,7 +48,7 @@ ClassDecl (name: Main, superClass: Object)
 | | | | | IntConst (value: 1)
 | | | | | IntConst (value: 2)
 | | | BuiltInWriteln ()
-Error message: No Variable a was found
+Error message: No Variable b was found
 
 Phase semantic failed because we expected to see:
 OK

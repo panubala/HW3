@@ -261,14 +261,6 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 				current = current.superClass;
 			}
 		}
-<<<<<<< HEAD
-		
-		
-		
-	
-=======
->>>>>>> origin/master
-
 	}
 	
 	

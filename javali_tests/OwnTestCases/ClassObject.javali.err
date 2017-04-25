@@ -1,4 +1,4 @@
-Debug information for file: javali_tests/OwnTestCases/ClassObject.javali
+Debug information for file: javali_tests\OwnTestCases\ClassObject.javali
 AST Resulting From Parsing Stage:
 ClassDecl (name: Object, superClass: Object)
 ClassDecl (name: Main, superClass: Object)

@@ -1,34 +1,16 @@
-/* Test that fields are inherited */
-
-class A {
-   int foo;
-   
-   void m(){
-      int k;
-   }
-}
-
-class B extends A {
-   int bar;
-}
- 
 class Main {
    void main() {
-      A a;
-		B b;
-		
-      a = new A();
-		a.foo = 1;
-		write(a.foo);
-		
-		a = new B();
-		a.foo = 2;
-		write(a.foo);
-		
-		b = new B();
-		b.foo = 3;
-		b.bar = 4;
-		write(b.foo);
-		write(b.bar);
+   
+   
+      
+	}
+	
+	int m() {
+		int k;
+		boolean b;
+		if(b) {
+			//return k;
+		}
+		b = true;
 	}
 }

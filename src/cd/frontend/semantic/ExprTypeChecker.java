@@ -294,7 +294,6 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 		System.out.println("==ExprCheck - Variable");
 		// TODO Auto-generated method stub
 		// System.out.println(ast.type.name)
-
 		if (!arg.containsKey(ast.name)) {
 			System.out.println("Failure " + ast.name);
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE, "No Variable " + ast.name + " was found");

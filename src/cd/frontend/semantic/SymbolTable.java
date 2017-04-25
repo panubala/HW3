@@ -95,4 +95,6 @@ public class SymbolTable{
 		System.out.println("================");
 	}
 
+	//public boolean hasReturnStmt;
+
 }

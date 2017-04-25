@@ -54,7 +54,6 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "Assignment must have compatible types.");
 		}
 
-
 		return arg;
 	}
 
@@ -88,9 +87,30 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 
 		// localSymbolTable = new SymbolTable<>();
 
-		visit(ast.decls(), null); // TODO ?
+		visit(ast.decls(), arg); // TODO ?
 		Void result = visit(ast.body(), null);
 
+		// check return Stmt
+		if (!ast.returnType.equals("void")) {
+			boolean rtnStmt = false;
+			for (Ast stmt : ast.body().children()) {
+				if (stmt instanceof Ast.ReturnStmt) {
+					rtnStmt = true;
+					break;
+				}
+			}
+
+			if (!rtnStmt) {
+				throw new SemanticFailure(SemanticFailure.Cause.MISSING_RETURN);
+			}
+		}
+		
+//		if (!ast.returnType.equals("void")){
+//			if(!TypeChecker.methodTable.get(currentClass + currentMethod.name).hasReturnStmt){
+//				throw new SemanticFailure(SemanticFailure.Cause.MISSING_RETURN);
+//			}
+//		}
+			
 		// currentMethod = null;
 
 		return result;
@@ -108,7 +128,7 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	public Void ifElse(IfElse ast, Void arg) {
 		System.out.println("==StmtCheck - IfElse");
 
-		Symbol.TypeSymbol conditionType = exprChecker.visit(ast.condition(), TypeChecker.symbolTable);
+		Symbol.TypeSymbol conditionType = exprChecker.visit(ast.condition(), TypeChecker.methodTable.get(currentClass + currentMethod.name));
 
 		if (!conditionType.equals(Symbol.PrimitiveTypeSymbol.booleanType)) {
 			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR,
@@ -124,18 +144,21 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	public Void returnStmt(ReturnStmt ast, Void arg) {
 		System.out.println("==StmtCheck - Return");
 		
-		if (ast.arg() == null){
+		//TypeChecker.methodTable.get(currentClass + currentMethod.name).hasReturnStmt=true;
+		
+		if (ast.arg() == null) {
 			if (!currentMethod.returnType.equals(PrimitiveTypeSymbol.voidType)) {
-	            throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
-	        }
-		}else{
-			ast.arg().type = exprChecker.visit(ast.arg(), TypeChecker.methodTable.get(currentClass + currentMethod.name));
-			
+				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
+			}
+		} else {
+			ast.arg().type = exprChecker.visit(ast.arg(),
+					TypeChecker.methodTable.get(currentClass + currentMethod.name));
+
 			if (!ast.arg().type.isSubType(currentMethod.returnType)) {
 				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "ReturnType is not a subtype");
 			}
 		}
-		
+
 		return arg;
 	}
 

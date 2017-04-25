@@ -146,14 +146,11 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable<
 	@Override
 	public TypeSymbol methodCall(MethodCallExpr ast, SymbolTable<VariableSymbol> arg) {
 		System.out.println("==ExprCheck - MethodCall");
-		// TODO Auto-generated method stub
 		
 		Var caller = (Var) ast.allArguments().get(0);
 		
-		String callerClass = arg.get(caller.name).name; //B
-		String calleeMethod = ast.methodName; //f
-		
-		//TODO check arguments
+		String callerClass = arg.get(caller.name).name;
+		String calleeMethod = ast.methodName;
 		
 		if(!TypeChecker.classTable.get(callerClass).containsKey(calleeMethod))
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_METHOD);

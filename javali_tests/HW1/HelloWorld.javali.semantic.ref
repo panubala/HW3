@@ -1,2 +1,2 @@
-WRONG_NUMBER_OF_ARGUMENTS
-Method f() takes 1 arguments, but was invoked with 2
+TYPE_ERROR
+Expected int but type was B

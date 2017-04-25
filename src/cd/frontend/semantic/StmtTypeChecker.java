@@ -135,11 +135,20 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 		System.out.println("==StmtCheck - MethodCall");
 		Var caller = (Var) ast.getMethodCallExpr().allArguments().get(0);
 		
+		if(TypeChecker.methodTable.get(currentClass+currentMethod.name) == null)
+			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE); //TODO Error correct?
+		
+		if(TypeChecker.methodTable.get(currentClass+currentMethod.name).get(caller.name) == null)
+			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE);
+		
 		String callerClass = TypeChecker.methodTable.get(currentClass+currentMethod.name).get(caller.name).name;
 		String calleeMethod = ast.getMethodCallExpr().methodName;
 		
 		System.out.println(callerClass);
-
+		
+		if(TypeChecker.classTable.get(callerClass) == null)
+			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
+		
 		System.out.println(calleeMethod);
 		if(!TypeChecker.classTable.get(callerClass).containsKey(calleeMethod))
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_METHOD);
@@ -147,7 +156,7 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 		if(TypeChecker.methodTable.get(callerClass+calleeMethod).parameterNames.size() != ast.getMethodCallExpr().argumentsWithoutReceiver().size())
 			throw new SemanticFailure(SemanticFailure.Cause.WRONG_NUMBER_OF_ARGUMENTS);
 		
-		System.out.println("Argument Check");
+		System.out.println("Argument Check:");
 		for(int i=0; i<ast.getMethodCallExpr().argumentsWithoutReceiver().size(); i++ ){
 			
 			Expr argument = ast.getMethodCallExpr().argumentsWithoutReceiver().get(i);
@@ -162,8 +171,6 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
 			
 		}
-		
-		
 
 		//exprChecker.visit(ast.getMethodCallExpr(), TypeChecker.methodTable.get(callerClass+calleeMethod));
 		return arg;

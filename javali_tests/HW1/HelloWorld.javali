@@ -3,9 +3,10 @@ class Main {
    int a;
    void main() {
      int a;
+     boolean g;
      B b;
-     //b = new B();
-     b.f(b,a);
+     b = new B();
+     b.f(b);
      // write(53110);
      // writeln();    
    }

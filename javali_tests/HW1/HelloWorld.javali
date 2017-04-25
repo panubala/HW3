@@ -6,12 +6,10 @@ class Main {
      boolean g;
      B b;
      b = new B();
-     b.f(b);
+     g = b.f(a);
      // write(53110);
      // writeln();    
    }
- 
- 
 }
 
 class B{

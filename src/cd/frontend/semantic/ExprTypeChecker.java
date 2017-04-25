@@ -148,11 +148,44 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 		
 		Var caller = (Var) ast.allArguments().get(0);
 		
+//		if(TypeChecker.methodTable.get(currentClass+currentMethod.name) == null)
+//			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE); //TODO Error correct?
+//		
+//		if(TypeChecker.methodTable.get(currentClass+currentMethod.name).get(caller.name) == null)
+//			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE);
+		
 		String callerClass = arg.get(caller.name).name;
 		String calleeMethod = ast.methodName;
 		
+		if(TypeChecker.classTable.get(callerClass) == null)
+			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
+		
+		System.out.println(calleeMethod);
 		if(!TypeChecker.classTable.get(callerClass).containsKey(calleeMethod))
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_METHOD);
+		
+		if(TypeChecker.methodTable.get(callerClass+calleeMethod).parameterNames.size() != ast.argumentsWithoutReceiver().size())
+			throw new SemanticFailure(SemanticFailure.Cause.WRONG_NUMBER_OF_ARGUMENTS);
+		
+		
+		System.out.println("Argument Check:");
+		for(int i=0; i<ast.argumentsWithoutReceiver().size(); i++ ){
+			
+			Expr argument = ast.argumentsWithoutReceiver().get(i);
+			Symbol.TypeSymbol argumentType = visit(argument,arg);
+			
+			String argName = TypeChecker.methodTable.get(callerClass+calleeMethod).parameterNames.get(i).toString();
+			
+			System.out.println(TypeChecker.methodTable.get(callerClass+calleeMethod).get(argName));
+			
+			System.out.println("here: "+ argumentType.name);
+			
+			if(!TypeChecker.methodTable.get(callerClass+calleeMethod).get(argName).equals(argumentType))
+				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
+			
+		}
+		
+		
 		
 		System.out.println(TypeChecker.classTable.get(callerClass).get(calleeMethod)); 
 

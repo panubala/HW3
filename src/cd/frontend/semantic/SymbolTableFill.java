@@ -25,7 +25,7 @@ import cd.util.Pair;
 
 public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Kind> {
 
-	private SymbolTable  globalSymbolTable;
+	private SymbolTable globalSymbolTable;
 	private HashMap<String, SymbolTable> classTables = new HashMap<>(); // Key:
 																		// ClassNames
 	private HashMap<String, SymbolTable> methodTables = new HashMap<>(); // Key:
@@ -33,7 +33,7 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 																			// +
 																			// MethodName
 
-	private SymbolTable  currentScopeTable;
+	private SymbolTable currentScopeTable;
 
 	public SymbolTableFill(SymbolTable symbolTable, HashMap<String, SymbolTable> globalClassTable,
 			HashMap<String, SymbolTable> globalMethodTable) {
@@ -75,13 +75,19 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 
 		// TODO:Duplicates
 		for (Ast.MethodDecl methodDecl : ast.methods()) {
-			if (classTables.get(ast.name).containsKey(methodDecl.name))
-				throw new SemanticFailure(SemanticFailure.Cause.DOUBLE_DECLARATION);
 
+			if (classTables.get(ast.name).containsKey(methodDecl.name)){
+				if (classTables.get(ast.name).containsType(globalSymbolTable.get(methodDecl.returnType))) {
+					throw new SemanticFailure(SemanticFailure.Cause.DOUBLE_DECLARATION);
+				}
+				if (methodTables.containsKey(ast.name + methodDecl.name)){
+					throw new SemanticFailure(SemanticFailure.Cause.DOUBLE_DECLARATION);
+				}
+			}
 			methodTables.put(ast.name + methodDecl.name, new SymbolTable());
 
 			currentScopeTable = methodTables.get(ast.name + methodDecl.name);
-			
+
 			currentScopeTable.inClass = ast.name;
 			// Add parameters of method
 			// for(int i=0; i<methodDecl.argumentNames.size();i++){
@@ -194,24 +200,22 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 		}
 
 		System.out.println("Table filled");
-		
-		
 
 		inheritanceCheck();
-		
-		for(Ast.ClassDecl classDecl : classDecls) {
-			if(!classDecl.superClass.equals("Object")){
-				
+
+		for (Ast.ClassDecl classDecl : classDecls) {
+			if (!classDecl.superClass.equals("Object")) {
+
 				SymbolTable superClass = classTables.get(classDecl.superClass);
 				SymbolTable orClass = classTables.get(classDecl.name);
-				
-				
-				for(String name : superClass.getAllNames()){
-					if(!orClass.containsKey(name)){
+
+				for (String name : superClass.getAllNames()) {
+					if (!orClass.containsKey(name)) {
 						orClass.put(name, superClass.get(name));
-						
-						if(methodTables.containsKey(classDecl.superClass + name)){
-							SymbolTable newTable = new SymbolTable(methodTables.get(classDecl.superClass + name).wholeTable());
+
+						if (methodTables.containsKey(classDecl.superClass + name)) {
+							SymbolTable newTable = new SymbolTable(
+									methodTables.get(classDecl.superClass + name).wholeTable());
 							newTable.inClass = classDecl.name;
 							methodTables.put(classDecl.name + name, newTable);
 						}
@@ -221,9 +225,6 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 		}
 
 	}
-	
-
-
 
 	void inheritanceCheck() {
 
@@ -248,8 +249,6 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 				current = current.superClass;
 			}
 		}
-		
-	
 
 	}
 

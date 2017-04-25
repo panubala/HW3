@@ -6,7 +6,7 @@ class Main {
      boolean g;
      B b;
      b = new B();
-     g = b.f(a);
+     g = b.f(a,a,a);
      // write(53110);
      // writeln();    
    }
@@ -14,7 +14,7 @@ class Main {
 
 class B{
 	int k;
-	boolean f(int a){
+	boolean f(int x, int y, int z){
 		int f;
 		boolean b;
 		f = a;

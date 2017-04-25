@@ -204,23 +204,26 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 		System.out.println("Table filled");
 
 		inheritanceCheck();
-
+		
+		
+		//Inheritence
 		for (Ast.ClassDecl classDecl : classDecls) {
 			if (!classDecl.superClass.equals("Object")) {
 
 				SymbolTable superClass = classTables.get(classDecl.superClass);
 				SymbolTable orClass = classTables.get(classDecl.name);
 
-				for (String name : superClass.getAllNames()) {
-					if (!orClass.containsKey(name)) {
+				for (String name : superClass.getAllNames()) { //name: all Vari/Field in superClass
+					if (!orClass.containsKey(name) || orClass.get(name).equals(superClass.get(name))) { //Does not have super method or have it and same type
 						orClass.put(name, superClass.get(name));
-
 						if (methodTables.containsKey(classDecl.superClass + name)) {
 							SymbolTable newTable = new SymbolTable(
 									methodTables.get(classDecl.superClass + name).wholeTable());
 							newTable.inClass = classDecl.name;
 							methodTables.put(classDecl.name + name, newTable);
 						}
+					} else{
+						throw new SemanticFailure(SemanticFailure.Cause.INVALID_OVERRIDE);
 					}
 				}
 			}

@@ -1,2 +1,2 @@
 DOUBLE_DECLARATION
-Method 'a(...)' has two parameters named 'i'
+Method 'foo(...)' has two parameters named 'b'

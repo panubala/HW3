@@ -222,14 +222,12 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 	@Override
 	public TypeSymbol nullConst(NullConst ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - NullConst");
-		ast.type = Symbol.ClassSymbol.nullType;
-		return ast.type;
+		return Symbol.ClassSymbol.nullType;
 	}
 
 	@Override
 	public TypeSymbol thisRef(ThisRef ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - ThisRef");
-		
 		return arg.get("This");
 	}
 
@@ -267,10 +265,11 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 		// TODO Auto-generated method stub
 		//System.out.println(ast.type.name)
 		
-		if(!arg.containsKey(ast.name))
+		if(!arg.containsKey(ast.name)){
+			System.out.println("Failure");
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE, "No Variable " + ast.name + " was found");
-		
-		return (TypeSymbol) arg.get(ast.name);
+		}
+		return arg.get(ast.name);
 	}
 	
 	

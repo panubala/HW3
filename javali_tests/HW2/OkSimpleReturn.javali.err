@@ -30,10 +30,15 @@ ClassDecl (name: Main, superClass: Object)
 | | | BuiltInWriteln ()
 
 Test failed because an exception was thrown:
-    null
+    cd.ir.Ast$ThisRef cannot be cast to cd.ir.Ast$Var
 Stack trace:
-java.lang.NullPointerException
-	at cd.frontend.semantic.StmtTypeChecker.assign(StmtTypeChecker.java:50)
+java.lang.ClassCastException: cd.ir.Ast$ThisRef cannot be cast to cd.ir.Ast$Var
+	at cd.frontend.semantic.ExprTypeChecker.methodCall(ExprTypeChecker.java:149)
+	at cd.frontend.semantic.ExprTypeChecker.methodCall(ExprTypeChecker.java:1)
+	at cd.ir.Ast$MethodCallExpr.accept(Ast.java:460)
+	at cd.ir.ExprVisitor.visit(ExprVisitor.java:15)
+	at cd.frontend.semantic.ExprTypeChecker.visit(ExprTypeChecker.java:28)
+	at cd.frontend.semantic.StmtTypeChecker.assign(StmtTypeChecker.java:48)
 	at cd.frontend.semantic.StmtTypeChecker.assign(StmtTypeChecker.java:1)
 	at cd.ir.Ast$Assign.accept(Ast.java:509)
 	at cd.ir.AstVisitor.visit(AstVisitor.java:16)

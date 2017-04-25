@@ -60,7 +60,7 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	public Void builtInWrite(BuiltInWrite ast, Void arg) {
 		System.out.println("==StmtCheck - Write");
 		
-		Symbol.TypeSymbol type = exprChecker.visit(ast.arg(), TypeChecker.symbolTable);
+		Symbol.TypeSymbol type = exprChecker.visit(ast.arg(), TypeChecker.methodTable.get(currentClass+currentMethod.name));
 		
 		if (!type.equals(PrimitiveTypeSymbol.intType)) {
             throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);

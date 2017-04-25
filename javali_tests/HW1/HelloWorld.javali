@@ -9,7 +9,10 @@ class Main {
      // write(53110);
      // writeln();    
    }
+ 
+ 
 }
+
 class B{
 	int k;
 	boolean f(int a){

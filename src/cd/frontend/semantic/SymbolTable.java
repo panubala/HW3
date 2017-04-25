@@ -34,6 +34,8 @@ public class SymbolTable{
 
 	// public Set<Pair<String>> parameters = new HashSet<>();
 	public ArrayList<String> parameterNames = new ArrayList<>();
+	
+	public String inClass;
 
 	public Collection<Symbol.ClassSymbol> getAllClassSymbols() {
 		Collection<TypeSymbol> allSymbols = symbolTable.values();
@@ -64,7 +66,7 @@ public class SymbolTable{
 	}
 
 	public void print() {
-		System.out.println("=====Table:=====");
+		System.out.println("==Table: (inClass " + inClass + ")=====");
 		System.out.println("=====Arg:======");
 		// for(Pair p: parameters){
 		// System.out.println(p.a + ": " + p.b);

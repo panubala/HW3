@@ -32,42 +32,42 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	private MethodSymbol currentMethod;
 	private String currentClass;
 	private Map<String, Symbol.MethodSymbol> methods;
-	
-	public  StmtTypeChecker(Symbol.ClassSymbol classSymbol) {
+
+	public StmtTypeChecker(Symbol.ClassSymbol classSymbol) {
 		// TODO Auto-generated constructor stub
 		this.methods = classSymbol.methods;
 		this.exprChecker = new ExprTypeChecker();
-	}	
-
-
+	}
 
 	@Override
 	public Void assign(Assign ast, Void arg) {
 		System.out.println("==StmtCheck - Assign");
-		Symbol.TypeSymbol leftType = exprChecker.visit(ast.left(), TypeChecker.methodTable.get(currentClass+currentMethod.name));
-        Symbol.TypeSymbol rightType = exprChecker.visit(ast.right(), TypeChecker.methodTable.get(currentClass+currentMethod.name));
-        
-        System.out.println("Left Type: "+ leftType.name + ", Right Type: " + rightType.name);
-        
-        if (!rightType.isSubType(leftType)) {
-            throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "Assignment must have compatible types.");
-        }
-        
+		Symbol.TypeSymbol leftType = exprChecker.visit(ast.left(),
+				TypeChecker.methodTable.get(currentClass + currentMethod.name));
+		Symbol.TypeSymbol rightType = exprChecker.visit(ast.right(),
+				TypeChecker.methodTable.get(currentClass + currentMethod.name));
+
+		System.out.println("Left Type: " + leftType.name + ", Right Type: " + rightType.name);
+
+		if (!rightType.isSubType(leftType)) {
+			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "Assignment must have compatible types.");
+		}
+
 		return arg;
 	}
 
 	@Override
 	public Void builtInWrite(BuiltInWrite ast, Void arg) {
 		System.out.println("==StmtCheck - Write");
-		
-		Symbol.TypeSymbol type = exprChecker.visit(ast.arg(), TypeChecker.methodTable.get(currentClass+currentMethod.name));
-		
+
+		Symbol.TypeSymbol type = exprChecker.visit(ast.arg(),
+				TypeChecker.methodTable.get(currentClass + currentMethod.name));
+
 		if (!type.equals(PrimitiveTypeSymbol.intType)) {
-            throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
-        }
+			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
+		}
 		return arg;
 	}
-
 
 	@Override
 	public Void classDecl(ClassDecl ast, Void arg) {
@@ -83,13 +83,13 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 		System.out.println("==StmtCheck - MethodDecl");
 
 		currentMethod = ast.sym;
-		
+
 		// localSymbolTable = new SymbolTable<>();
 
-		visit(ast.decls(), null); //TODO ?
+		visit(ast.decls(), null); // TODO ?
 		Void result = visit(ast.body(), null);
 
-		//currentMethod = null;
+		// currentMethod = null;
 
 		return result;
 	}
@@ -121,9 +121,9 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	@Override
 	public Void returnStmt(ReturnStmt ast, Void arg) {
 		System.out.println("==StmtCheck - Return");
-				
-		ast.arg().type = exprChecker.visit(ast.arg(), TypeChecker.methodTable.get(currentClass+currentMethod.name));
-		
+
+		ast.arg().type = exprChecker.visit(ast.arg(), TypeChecker.methodTable.get(currentClass + currentMethod.name));
+
 		if (!ast.arg().type.isSubType(currentMethod.returnType)) {
 			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "ReturnType is not a subtype");
 		}
@@ -133,61 +133,68 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	@Override
 	public Void methodCall(MethodCall ast, Void arg) {
 		System.out.println("==StmtCheck - MethodCall");
-		Var caller = (Var) ast.getMethodCallExpr().allArguments().get(0);
-		
-		if(TypeChecker.methodTable.get(currentClass+currentMethod.name) == null)
-			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE); //TODO Error correct?
-		
-		if(TypeChecker.methodTable.get(currentClass+currentMethod.name).get(caller.name) == null)
-			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE);
-		
-		String callerClass = TypeChecker.methodTable.get(currentClass+currentMethod.name).get(caller.name).name;
+		String callerClass;
+		if (ast.getMethodCallExpr().allArguments().get(0) instanceof Ast.ThisRef) {
+			callerClass = currentClass;
+		} else {
+			Var caller = (Var) ast.getMethodCallExpr().allArguments().get(0);
+			if (TypeChecker.methodTable.get(currentClass + currentMethod.name) == null)
+				throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE); // TODO
+																					// Error
+																					// correct?
+
+			if (TypeChecker.methodTable.get(currentClass + currentMethod.name).get(caller.name) == null)
+				throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE);
+
+			callerClass = TypeChecker.methodTable.get(currentClass + currentMethod.name).get(caller.name).name;
+		}
 		String calleeMethod = ast.getMethodCallExpr().methodName;
-		
+
 		System.out.println(callerClass);
-		
-		if(TypeChecker.classTable.get(callerClass) == null)
+
+		if (TypeChecker.classTable.get(callerClass) == null)
 			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
-		
+
 		System.out.println(calleeMethod);
-		if(!TypeChecker.classTable.get(callerClass).containsKey(calleeMethod))
+		if (!TypeChecker.classTable.get(callerClass).containsKey(calleeMethod))
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_METHOD);
-		
-		if(TypeChecker.methodTable.get(callerClass+calleeMethod).parameterNames.size() != ast.getMethodCallExpr().argumentsWithoutReceiver().size())
+
+		if (TypeChecker.methodTable.get(callerClass + calleeMethod).parameterNames.size() != ast.getMethodCallExpr()
+				.argumentsWithoutReceiver().size())
 			throw new SemanticFailure(SemanticFailure.Cause.WRONG_NUMBER_OF_ARGUMENTS);
-		
+
 		System.out.println("Argument Check:");
-		for(int i=0; i<ast.getMethodCallExpr().argumentsWithoutReceiver().size(); i++ ){
-			
+		for (int i = 0; i < ast.getMethodCallExpr().argumentsWithoutReceiver().size(); i++) {
+
 			Expr argument = ast.getMethodCallExpr().argumentsWithoutReceiver().get(i);
-			Symbol.TypeSymbol argumentType = exprChecker.visit(argument,TypeChecker.methodTable.get(currentClass+currentMethod.name));
-			
-			String argName = TypeChecker.methodTable.get(callerClass+calleeMethod).parameterNames.get(i).toString();
-			
-			System.out.println(TypeChecker.methodTable.get(callerClass+calleeMethod).get(argName));
+			Symbol.TypeSymbol argumentType = exprChecker.visit(argument,
+					TypeChecker.methodTable.get(currentClass + currentMethod.name));
+
+			String argName = TypeChecker.methodTable.get(callerClass + calleeMethod).parameterNames.get(i).toString();
+
+			System.out.println(TypeChecker.methodTable.get(callerClass + calleeMethod).get(argName));
 			System.out.println(argumentType);
-			
-			if(!TypeChecker.methodTable.get(callerClass+calleeMethod).get(argName).equals(argumentType))
+
+			if (!TypeChecker.methodTable.get(callerClass + calleeMethod).get(argName).equals(argumentType))
 				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
-			
+
 		}
 
-		//exprChecker.visit(ast.getMethodCallExpr(), TypeChecker.methodTable.get(callerClass+calleeMethod));
+		// exprChecker.visit(ast.getMethodCallExpr(),
+		// TypeChecker.methodTable.get(callerClass+calleeMethod));
 		return arg;
 	}
-
 
 	@Override
 	public Void whileLoop(WhileLoop ast, Void arg) {
 		System.out.println("==StmtCheck - WhileLoop");
 		Symbol.TypeSymbol conditionType = exprChecker.visit(ast.condition(), TypeChecker.symbolTable);
 
-        if (!conditionType.equals(Symbol.PrimitiveTypeSymbol.booleanType)) {
-            throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "while requires condition to be of type boolean");
-        }
-		return visit(ast.body(),arg);
+		if (!conditionType.equals(Symbol.PrimitiveTypeSymbol.booleanType)) {
+			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR,
+					"while requires condition to be of type boolean");
+		}
+		return visit(ast.body(), arg);
 	}
-	
-	
 
 }

@@ -79,7 +79,8 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 			methodTables.put(ast.name + methodDecl.name, new SymbolTable());
 
 			currentScopeTable = methodTables.get(ast.name + methodDecl.name);
-
+			
+			currentScopeTable.inClass = ast.name;
 			// Add parameters of method
 			// for(int i=0; i<methodDecl.argumentNames.size();i++){
 			// Pair p = new Pair<>(methodDecl.argumentNames.get(i),

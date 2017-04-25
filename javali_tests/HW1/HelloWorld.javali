@@ -1,26 +1,23 @@
-/* Kind of like hello world */
 class Main {
-   int a;
-   void main() {
-     int a;
-     boolean g;
-     B b;
-     b = new B();
-     g = b.f(a,a,a);
-     // write(53110);
-     // writeln();    
-   }
-}
 
-class B{
-	int k;
-	boolean f(int x, int y, int z){
-		int f;
-		boolean b;
-		f = x;
-		return b;
+   int m() {
+      return 0;
+   }
+	
+	void main() {
+	
+	   int res;
+	   res = -1;
+	
+		m();
+      res = m();
+      write(res);
+      writeln();
+      
+      res = this.m();
+      write(res);
+      writeln();
+      
 	}
-	void g(){
-		int k;
-	}
+	
 }

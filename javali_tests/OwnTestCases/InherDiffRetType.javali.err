@@ -1,4 +1,4 @@
-Debug information for file: javali_tests/OwnTestCases/InherDiffRetType.javali
+Debug information for file: javali_tests\OwnTestCases\InherDiffRetType.javali
 AST Resulting From Parsing Stage:
 ClassDecl (name: Foo, superClass: Object)
 | MethodDecl (argumentNames: [], argumentTypes: [], name: foo, returnType: int)

@@ -1,13 +1,10 @@
 class Main {
-    //int main ;
-    void main () {
-        A a;
-        a = new A();
+    void main() {
     }
-    int main;
-	//boolean main(){
-	//}
 }
 
 class A {
+    int a (int i, boolean i, boolean b) {
+        return i;
+    }
 }

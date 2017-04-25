@@ -1,4 +1,4 @@
-Debug information for file: javali_tests/OwnTestCases/InherDiffNumParam.javali
+Debug information for file: javali_tests\OwnTestCases\InherDiffNumParam.javali
 AST Resulting From Parsing Stage:
 ClassDecl (name: A, superClass: Object)
 ClassDecl (name: Foo, superClass: Object)

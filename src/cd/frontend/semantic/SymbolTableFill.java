@@ -97,6 +97,8 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 			// }
 
 			for (String name : methodDecl.argumentNames) {
+				if(currentScopeTable.parameterNames.contains(name))
+					throw new SemanticFailure(SemanticFailure.Cause.DOUBLE_DECLARATION);
 				currentScopeTable.parameterNames.add(name);
 			}
 

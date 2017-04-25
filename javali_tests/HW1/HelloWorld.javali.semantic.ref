@@ -1,1 +1,2 @@
-OK
+DOUBLE_DECLARATION
+Method 'a(...)' has two parameters named 'i'

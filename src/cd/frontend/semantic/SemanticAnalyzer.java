@@ -12,7 +12,7 @@ import cd.ir.Symbol;
 public class SemanticAnalyzer {
 	
 	public final Main main;	
-	private SymbolTable<Symbol.TypeSymbol> globalSymbolTable = new SymbolTable<>();
+	private SymbolTable globalSymbolTable = new SymbolTable();
 	private HashMap<String, SymbolTable> globalClassTable = new HashMap<>();
 	private HashMap<String, SymbolTable> globalMethodTable = new HashMap<>();
 	

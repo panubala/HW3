@@ -23,7 +23,7 @@ import cd.util.Pair;
 
 public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Kind> {
 
-	private SymbolTable<Symbol.TypeSymbol> globalSymbolTable;
+	private SymbolTable  globalSymbolTable;
 	private HashMap<String, SymbolTable> classTables = new HashMap<>(); // Key:
 																		// ClassNames
 	private HashMap<String, SymbolTable> methodTables = new HashMap<>(); // Key:
@@ -31,9 +31,9 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 																			// +
 																			// MethodName
 
-	private SymbolTable<Symbol.TypeSymbol> currentScopeTable;
+	private SymbolTable  currentScopeTable;
 
-	public SymbolTableFill(SymbolTable<Symbol.TypeSymbol> symbolTable, HashMap<String, SymbolTable> globalClassTable,
+	public SymbolTableFill(SymbolTable symbolTable, HashMap<String, SymbolTable> globalClassTable,
 			HashMap<String, SymbolTable> globalMethodTable) {
 		this.globalSymbolTable = symbolTable;
 		this.classTables = globalClassTable;
@@ -76,7 +76,7 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 			if (classTables.get(ast.name).containsKey(methodDecl.name))
 				throw new SemanticFailure(SemanticFailure.Cause.DOUBLE_DECLARATION);
 
-			methodTables.put(ast.name + methodDecl.name, new SymbolTable<>());
+			methodTables.put(ast.name + methodDecl.name, new SymbolTable());
 
 			currentScopeTable = methodTables.get(ast.name + methodDecl.name);
 
@@ -180,7 +180,7 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 			classDecl.sym = new Symbol.ClassSymbol(classDecl);
 			globalSymbolTable.put(classDecl.sym);
 
-			classTables.put(classDecl.name, new SymbolTable<>());
+			classTables.put(classDecl.name, new SymbolTable());
 			// symbolTable.put(new Symbol.ArrayTypeSymbol(classDecl.sym));
 		}
 

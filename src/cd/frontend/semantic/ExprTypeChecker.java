@@ -20,22 +20,22 @@ import cd.ir.Symbol;
 import cd.ir.Symbol.PrimitiveTypeSymbol;
 import cd.ir.Symbol.TypeSymbol;
 
-public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable<Symbol.TypeSymbol>>{	
+public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>{	
 	
 	@Override
-	public TypeSymbol visit(Expr ast, SymbolTable<TypeSymbol> arg) {
+	public TypeSymbol visit(Expr ast, SymbolTable arg) {
 		// TODO Auto-generated method stub
 		return super.visit(ast, arg);
 	}
 
 	@Override
-	public TypeSymbol visitChildren(Expr ast, SymbolTable<TypeSymbol> arg) {
+	public TypeSymbol visitChildren(Expr ast, SymbolTable arg) {
 		// TODO Auto-generated method stub
 		return super.visitChildren(ast, arg);
 	}
 
 	@Override
-	public TypeSymbol binaryOp(BinaryOp ast, SymbolTable<TypeSymbol> arg) {
+	public TypeSymbol binaryOp(BinaryOp ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - BinaryOP");
 		
 		Symbol.TypeSymbol leftType = visit(ast.left(), arg);
@@ -91,35 +91,35 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable<
 	}
 
 	@Override
-	public TypeSymbol booleanConst(BooleanConst ast, SymbolTable<TypeSymbol> arg) {
+	public TypeSymbol booleanConst(BooleanConst ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - BooleanConst");
 		ast.type = Symbol.PrimitiveTypeSymbol.booleanType;
 		return ast.type;
 	}
 
 	@Override
-	public TypeSymbol builtInRead(BuiltInRead ast, SymbolTable<TypeSymbol> arg) {
+	public TypeSymbol builtInRead(BuiltInRead ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - BuiltInRead");
 		ast.type = Symbol.PrimitiveTypeSymbol.intType;
 		return ast.type;
 	}
 
 	@Override
-	public TypeSymbol cast(Cast ast, SymbolTable<TypeSymbol> arg) {
+	public TypeSymbol cast(Cast ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - Cast");
 		// TODO Auto-generated method stub
 		return super.cast(ast, arg);
 	}
 
 	@Override
-	public TypeSymbol field(Field ast, SymbolTable<TypeSymbol> arg) {
+	public TypeSymbol field(Field ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - Field");
 		// TODO Auto-generated method stub
 		return super.field(ast, arg);
 	}
 
 	@Override
-	public TypeSymbol index(Index ast, SymbolTable<TypeSymbol> arg) {
+	public TypeSymbol index(Index ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - Index");
 		
 		Symbol.TypeSymbol leftType = visit(ast.left(), arg);
@@ -137,13 +137,13 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable<
 	}
 
 	@Override
-	public TypeSymbol intConst(IntConst ast, SymbolTable<TypeSymbol> arg) {
+	public TypeSymbol intConst(IntConst ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - IntConst");
 		return Symbol.PrimitiveTypeSymbol.intType;
 	}
 
 	@Override
-	public TypeSymbol methodCall(MethodCallExpr ast, SymbolTable<TypeSymbol> arg) {
+	public TypeSymbol methodCall(MethodCallExpr ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - MethodCall");
 		
 		Var caller = (Var) ast.allArguments().get(0);
@@ -160,7 +160,7 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable<
 	}
 
 	@Override
-	public TypeSymbol newObject(NewObject ast, SymbolTable<TypeSymbol> arg) {
+	public TypeSymbol newObject(NewObject ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - NewObject");
 		
 //		if(!arg.containsKey(ast.typeName)) //should be checked in the filler
@@ -169,7 +169,7 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable<
 	}
 
 	@Override
-	public TypeSymbol newArray(NewArray ast, SymbolTable<TypeSymbol> arg) {
+	public TypeSymbol newArray(NewArray ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - NewArray");
 		Symbol.TypeSymbol type = visit(ast.arg(), arg);
 		
@@ -187,23 +187,21 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable<
 	}
 
 	@Override
-	public TypeSymbol nullConst(NullConst ast, SymbolTable<TypeSymbol> arg) {
+	public TypeSymbol nullConst(NullConst ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - NullConst");
 		ast.type = Symbol.ClassSymbol.nullType;
 		return ast.type;
 	}
 
 	@Override
-	public TypeSymbol thisRef(ThisRef ast, SymbolTable<TypeSymbol> arg) {
+	public TypeSymbol thisRef(ThisRef ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - ThisRef");
 		
-		
-		System.out.println("Fehler");
-		return super.thisRef(ast, arg);
+		return arg.get("This");
 	}
 
 	@Override
-	public TypeSymbol unaryOp(UnaryOp ast, SymbolTable<TypeSymbol> arg) {
+	public TypeSymbol unaryOp(UnaryOp ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - UnaryOp");
 		Symbol.TypeSymbol type = visit(ast.arg(), arg);;
 		
@@ -231,7 +229,7 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable<
 	}
 
 	@Override
-	public TypeSymbol var(Var ast, SymbolTable<TypeSymbol> arg) {
+	public TypeSymbol var(Var ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - Variable");
 		// TODO Auto-generated method stub
 		//System.out.println(ast.type.name)

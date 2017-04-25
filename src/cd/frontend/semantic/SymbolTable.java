@@ -9,28 +9,26 @@ import java.util.Map;
 import cd.ir.Symbol;
 import cd.ir.Symbol.TypeSymbol;
 
-public class SymbolTable<S extends Symbol> {
+public class SymbolTable{
 
-	private SymbolTable<? extends Symbol> table;
-	private Map<String, S> symbolTable = new HashMap<>();
+	
+	private Map<String, TypeSymbol> symbolTable = new HashMap<>();
 
 	public SymbolTable() {
-		this.table = null;
+		this.symbolTable = symbolTable;
 	}
 
-	public SymbolTable(SymbolTable table) {
-		this.table = table;
+	public SymbolTable(Map<String, TypeSymbol> table) {
+		this.symbolTable = table;
 	}
 
-	public Symbol get(String string) {
-		S key = symbolTable.get(string);
-		if (table != null && key == null) {
-			return table.get(string);
-		}
+	public TypeSymbol get(String string) {
+		TypeSymbol key = symbolTable.get(string);
+
 		return key;
 	}
 
-	public Collection<S> getAllSymbols() {
+	public Collection<TypeSymbol> getAllSymbols() {
 		return symbolTable.values();
 	}
 
@@ -38,7 +36,7 @@ public class SymbolTable<S extends Symbol> {
 	public ArrayList<String> parameterNames = new ArrayList<>();
 
 	public Collection<Symbol.ClassSymbol> getAllClassSymbols() {
-		Collection<S> allSymbols = symbolTable.values();
+		Collection<TypeSymbol> allSymbols = symbolTable.values();
 		ArrayList result = new ArrayList<>();
 		for (Symbol s : allSymbols) {
 			if (s instanceof Symbol.ClassSymbol) {
@@ -48,12 +46,12 @@ public class SymbolTable<S extends Symbol> {
 		return result;
 	}
 
-	public void put(S symbol) {
+	public void put(TypeSymbol symbol) {
 		symbolTable.put(symbol.name, symbol);
 
 	}
 
-	public void put(String name, S symbol) {
+	public void put(String name, TypeSymbol symbol) {
 		symbolTable.put(name, symbol);
 	}
 

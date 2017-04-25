@@ -20,6 +20,7 @@ import cd.ir.ExprVisitor;
 import cd.ir.Symbol;
 import cd.ir.Symbol.PrimitiveTypeSymbol;
 import cd.ir.Symbol.TypeSymbol;
+import cd.ir.Symbol.VariableSymbol;
 
 public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable> {
 
@@ -116,6 +117,8 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 	public TypeSymbol field(Field ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - Field");
 
+
+
 		String fieldName = ast.fieldName;
 		TypeSymbol classN = visit(ast.arg(), arg);
 		
@@ -127,6 +130,7 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_FIELD);
 				
 		return TypeChecker.classTable.get(classN.name).get(fieldName);
+
 	}
 
 	@Override
@@ -249,9 +253,12 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 
 	@Override
 	public TypeSymbol thisRef(ThisRef ast, SymbolTable arg) {
-		System.out.println("==ExprCheck - ThisRef");
+
+		System.out.println("==ExprCheck - ThisRef");		
+
 		return (TypeSymbol) arg.get("This");
 	}
+
 
 	@Override
 	public TypeSymbol unaryOp(UnaryOp ast, SymbolTable arg) {

@@ -1,4 +1,4 @@
-Debug information for file: javali_tests\HW2\OkSimpleReturn.javali
+Debug information for file: javali_tests/HW2/OkSimpleReturn.javali
 AST Resulting From Parsing Stage:
 ClassDecl (name: Main, superClass: Object)
 | MethodDecl (argumentNames: [], argumentTypes: [], name: m, returnType: int)

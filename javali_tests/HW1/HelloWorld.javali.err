@@ -1,4 +1,4 @@
-Debug information for file: javali_tests\HW1\HelloWorld.javali
+Debug information for file: javali_tests/HW1/HelloWorld.javali
 AST Resulting From Parsing Stage:
 ClassDecl (name: Main, superClass: Object)
 | VarDecl (name: a, type: int)

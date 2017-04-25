@@ -1,4 +1,4 @@
-Debug information for file: javali_tests\HW3\OkInheritanceFields.javali
+Debug information for file: javali_tests/HW3/OkInheritanceFields.javali
 AST Resulting From Parsing Stage:
 ClassDecl (name: A, superClass: Object)
 | VarDecl (name: foo, type: int)

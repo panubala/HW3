@@ -1,4 +1,4 @@
-Debug information for file: javali_tests\HW3\ErrUnknownField1.javali
+Debug information for file: javali_tests/HW3/ErrUnknownField1.javali
 AST Resulting From Parsing Stage:
 ClassDecl (name: X, superClass: Object)
 | VarDecl (name: field, type: int)

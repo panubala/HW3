@@ -1,0 +1,19 @@
+Debug information for file: javali_tests/OwnTestCases/ClassObject.javali
+AST Resulting From Parsing Stage:
+ClassDecl (name: Object, superClass: Object)
+ClassDecl (name: Main, superClass: Object)
+| MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
+| | Seq ()
+| | Seq ()
+Error message from reference is: OBJECT_CLASS_DEFINED
+Error message: Circular Inheritance 
+
+Phase semantic failed because we expected to see:
+OBJECT_CLASS_DEFINED
+But we actually saw:
+CIRCULAR_INHERITANCE
+The difference is:
+At line   1 /   1:
+< OBJECT_CLASS_DEFINED
+> CIRCULAR_INHERITANCE
+

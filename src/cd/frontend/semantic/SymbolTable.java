@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import cd.ir.Symbol;
 import cd.ir.Symbol.TypeSymbol;
@@ -21,15 +22,24 @@ public class SymbolTable{
 	public SymbolTable(Map<String, TypeSymbol> table) {
 		this.symbolTable = table;
 	}
+	
+	public Map<String, TypeSymbol> wholeTable(){
+		return symbolTable;
+	}
 
 	public TypeSymbol get(String string) {
 		TypeSymbol key = symbolTable.get(string);
 
 		return key;
 	}
+	
 
 	public Collection<TypeSymbol> getAllSymbols() {
 		return symbolTable.values();
+	}
+	
+	public Set<String> getAllNames() {
+		return symbolTable.keySet();
 	}
 
 	// public Set<Pair<String>> parameters = new HashSet<>();

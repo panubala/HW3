@@ -119,6 +119,10 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 		String fieldName = ast.fieldName;
 		TypeSymbol classN = visit(ast.arg(), arg);
 		
+		System.out.println("fN:" + fieldName);
+
+		System.out.println("classN:" + classN.name);
+		
 		if(TypeChecker.classTable.get(classN.name).get(fieldName) == null)			
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_FIELD);
 				
@@ -281,7 +285,6 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 	@Override
 	public TypeSymbol var(Var ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - Variable");
-		System.out.println("  " + ast.name);
 		// TODO Auto-generated method stub
 		// System.out.println(ast.type.name)
 

@@ -1,19 +1,34 @@
-/* Test that an invalid field name is detected */
+/* Test that fields are inherited */
 
-class X {
-	int field;
-	Y ypsil;
+class A {
+   int foo;
+   
+   void m(){
+      int k;
+   }
 }
 
+class B extends A {
+   int bar;
+}
+ 
 class Main {
    void main() {
-      X x;
-		x = new X();
-		z.field = 0;
-		x.notafield = 1;    /* ILLEGAL: bad field name */
+      A a;
+		B b;
+		
+      a = new A();
+		a.foo = 1;
+		write(a.foo);
+		
+		a = new B();
+		a.foo = 2;
+		write(a.foo);
+		
+		b = new B();
+		b.foo = 3;
+		b.bar = 4;
+		write(b.foo);
+		write(b.bar);
 	}
-}
-
-class Y{
-	boolean b;
 }

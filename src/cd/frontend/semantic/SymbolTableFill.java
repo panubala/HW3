@@ -194,6 +194,27 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 		System.out.println("Table filled");
 
 		inheritanceCheck();
+		
+		for(Ast.ClassDecl classDecl : classDecls) {
+			if(!classDecl.superClass.equals("Object")){
+				
+				SymbolTable superClass = classTables.get(classDecl.superClass);
+				SymbolTable orClass = classTables.get(classDecl.name);
+				
+				
+				for(String name : superClass.getAllNames()){
+					if(!orClass.containsKey(name)){
+						orClass.put(name, superClass.get(name));
+						
+						if(methodTables.containsKey(classDecl.superClass + name)){
+							SymbolTable newTable = new SymbolTable(methodTables.get(classDecl.superClass + name).wholeTable());
+							newTable.inClass = classDecl.name;
+							methodTables.put(classDecl.name + name, newTable);
+						}
+					}
+				}
+			}
+		}
 
 	}
 

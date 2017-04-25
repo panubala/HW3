@@ -52,11 +52,11 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 		return typeSymbol;
 	}
 
-	// TODO:inheritence
+	
 	@Override
 	public Symbol classDecl(ClassDecl ast, Kind arg) {
 		System.out.println("==Filling - ClassDecl");
-		// TODO Auto-generated method stub
+	
 		ast.sym.superClass = (Symbol.ClassSymbol) undeclaredType(ast.superClass);
 
 		System.out.println("Passed SuperClass");
@@ -225,13 +225,17 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 
 
 
-	void inheritanceCheck() {
+	private void inheritanceCheck() {
 
 		System.out.println("==Inheritance check");
 
 		Collection<Symbol.ClassSymbol> classSyms = globalSymbolTable.getAllClassSymbols();
 
 		for (Symbol.ClassSymbol classSym : classSyms) {
+			
+			
+			
+			
 			Set<String> checked = new HashSet<>();
 
 			Symbol.ClassSymbol current = classSym;
@@ -249,8 +253,12 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 			}
 		}
 		
+		
+		
 	
 
 	}
+	
+	
 
 }

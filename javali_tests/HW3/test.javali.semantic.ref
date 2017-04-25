@@ -1,1 +1,2 @@
-OK
+TYPE_ERROR
+Type void cannot be assigned to int

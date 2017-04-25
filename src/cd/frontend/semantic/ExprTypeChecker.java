@@ -140,8 +140,7 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable<
 	@Override
 	public TypeSymbol intConst(IntConst ast, SymbolTable<VariableSymbol> arg) {
 		System.out.println("==ExprCheck - IntConst");
-		ast.type = Symbol.PrimitiveTypeSymbol.intType;
-		return ast.type;
+		return Symbol.PrimitiveTypeSymbol.intType;
 	}
 
 	@Override
@@ -195,8 +194,29 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable<
 	@Override
 	public TypeSymbol unaryOp(UnaryOp ast, SymbolTable<VariableSymbol> arg) {
 		System.out.println("==ExprCheck - UnaryOp");
-		// TODO Auto-generated method stub
-		return super.unaryOp(ast, arg);
+		Symbol.TypeSymbol type = visit(ast.arg(), arg);;
+		
+		switch (ast.operator) {
+			case U_PLUS:
+			case U_MINUS:
+				
+				if (!type.equals(PrimitiveTypeSymbol.intType)) {
+                    throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
+                    }
+				
+				return PrimitiveTypeSymbol.intType;
+			
+			case U_BOOL_NOT:
+				
+				if (!type.equals(PrimitiveTypeSymbol.booleanType)) {
+                    throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
+                }
+                return PrimitiveTypeSymbol.booleanType;
+                
+			default: 
+				throw new RuntimeException("Unsupported operator");
+		}
+		
 	}
 
 	@Override

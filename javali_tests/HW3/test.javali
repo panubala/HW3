@@ -4,6 +4,8 @@ class Main {
 		int i0;
 		i0 = 0;
 		
-		i0 =   7 + i0;
+		i0 = hallo() ;
 	}
+	
+	void hallo(){}
 }

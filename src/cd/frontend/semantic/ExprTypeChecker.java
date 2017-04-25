@@ -188,8 +188,10 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 		
 		
 		System.out.println(TypeChecker.classTable.get(callerClass).get(calleeMethod)); 
+		
+		
+		return TypeChecker.classTable.get(callerClass).get(calleeMethod);
 
-		return super.methodCall(ast, arg);
 	}
 
 	@Override
@@ -227,13 +229,9 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 
 	@Override
 	public TypeSymbol thisRef(ThisRef ast, SymbolTable arg) {
-		System.out.println("==ExprCheck - ThisRef");
-<<<<<<< HEAD
-		
+		System.out.println("==ExprCheck - ThisRef");		
 		return (TypeSymbol) arg.get("This");
-=======
-		return arg.get("This");
->>>>>>> origin/master
+
 	}
 
 	@Override

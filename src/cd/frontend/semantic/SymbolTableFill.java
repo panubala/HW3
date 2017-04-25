@@ -125,7 +125,7 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 
 		// Add parameters into the table
 		for (int i = 0; i < ast.argumentNames.size(); i++) {
-			visit(new VarDecl(ast.argumentTypes.get(0), ast.argumentNames.get(0)), arg);
+			visit(new VarDecl(ast.argumentTypes.get(i), ast.argumentNames.get(i)), arg);
 		}
 		visit(ast.decls(), arg);
 

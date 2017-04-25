@@ -17,7 +17,7 @@ class B{
 	boolean f(int x, int y, int z){
 		int f;
 		boolean b;
-		f = a;
+		f = x;
 		return b;
 	}
 	void g(){

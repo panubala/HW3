@@ -1,0 +1,18 @@
+class Foo {
+    int foo() {
+        int i;
+        return i;
+    }
+}
+
+class Bar extends Foo {
+    boolean foo() {
+        boolean b;
+        return b;
+    }
+}
+
+class Main {
+    void main() {
+    }
+}

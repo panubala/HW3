@@ -1,0 +1,19 @@
+class A {
+}
+
+class Foo {
+   int foo(boolean b, int i, A a) {
+        return i;
+    }
+}
+
+class Bar extends Foo {
+    int foo(boolean b, int i, A a, A b) {
+        return i;
+    }
+}
+
+class Main {
+    void main() {
+    }
+}

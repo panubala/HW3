@@ -1,0 +1,30 @@
+Debug information for file: javali_tests/HW1/HelloWorld.javali
+AST Resulting From Parsing Stage:
+ClassDecl (name: Main, superClass: Object)
+| MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
+| | Seq ()
+| | Seq ()
+| MethodDecl (argumentNames: [], argumentTypes: [], name: m, returnType: int)
+| | Seq ()
+| | | VarDecl (name: k, type: int)
+| | | VarDecl (name: b, type: boolean)
+| | Seq ()
+| | | IfElse ()
+| | | | Var (name: b)
+| | | | Seq ()
+| | | | Nop ()
+| | | Assign ()
+| | | | Var (name: b)
+| | | | BooleanConst (value: true)
+Error message from reference is: Method Main.m is missing a return statement
+Error message: No Variable b was found
+
+Phase semantic failed because we expected to see:
+MISSING_RETURN
+But we actually saw:
+NO_SUCH_VARIABLE
+The difference is:
+At line   1 /   1:
+< MISSING_RETURN
+> NO_SUCH_VARIABLE
+

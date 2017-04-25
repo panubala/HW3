@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import cd.ir.Ast;
@@ -192,10 +194,15 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 		}
 
 		System.out.println("Table filled");
+		
+		
 
 		inheritanceCheck();
 
 	}
+	
+
+
 
 	void inheritanceCheck() {
 
@@ -220,6 +227,8 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 				current = current.superClass;
 			}
 		}
+		
+	
 
 	}
 

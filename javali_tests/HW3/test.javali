@@ -1,13 +1,20 @@
-/* Check if code selection for immediate operands works */
-class Main {
-	void main() {
-	 
-   }
-   
- class A {
+class A {
    int foo;
 }
 
-
-	
+class B extends A {
+   int bar;
+}
+ 
+class Main {
+   void main() {
+      A a;
+		B b;
+		
+      a = new A();
+	  a.foo = 1;
+		
+		
+		
+	}
 }

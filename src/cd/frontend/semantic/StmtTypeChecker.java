@@ -42,6 +42,7 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	@Override
 	public Void assign(Assign ast, Void arg) {
 		System.out.println("==StmtCheck - Assign");
+
 		Symbol.TypeSymbol leftType = exprChecker.visit(ast.left(),
 				TypeChecker.methodTable.get(currentClass + currentMethod.name));
 		Symbol.TypeSymbol rightType = exprChecker.visit(ast.right(),
@@ -52,6 +53,7 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 		if (!rightType.isSubType(leftType)) {
 			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "Assignment must have compatible types.");
 		}
+
 
 		return arg;
 	}
@@ -121,12 +123,19 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	@Override
 	public Void returnStmt(ReturnStmt ast, Void arg) {
 		System.out.println("==StmtCheck - Return");
-
-		ast.arg().type = exprChecker.visit(ast.arg(), TypeChecker.methodTable.get(currentClass + currentMethod.name));
-
-		if (!ast.arg().type.isSubType(currentMethod.returnType)) {
-			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "ReturnType is not a subtype");
+		
+		if (ast.arg() == null){
+			if (!currentMethod.returnType.equals(PrimitiveTypeSymbol.voidType)) {
+	            throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
+	        }
+		}else{
+			ast.arg().type = exprChecker.visit(ast.arg(), TypeChecker.methodTable.get(currentClass + currentMethod.name));
+			
+			if (!ast.arg().type.isSubType(currentMethod.returnType)) {
+				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR, "ReturnType is not a subtype");
+			}
 		}
+		
 		return arg;
 	}
 

@@ -1,18 +1,28 @@
 /* Kind of like hello world */
 class Main {
-   int a;
-   void main() {
-     int a;
-     B b;
-     b = new B();
-     a = 5;
+	void main() {
+		int i0;
+		i0 = 0;
+		
+		i0 = 5 + i0;
+		write(i0);
+		writeln();
+		
+		i0 = i0 + 5;
+		write(i0);
+		writeln();
+		
+		i0 = i0 + 5 + 3;
+		write(i0);
+		writeln();
+	}
+
+
+    
      // write(53110);
      // writeln();    
    }
+ 
+ 
 }
-class B{
-	int f(){
-		int b;
-		return b;
-	}
-}
+

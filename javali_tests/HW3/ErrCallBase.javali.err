@@ -12,13 +12,14 @@ ClassDecl (name: Main, superClass: Object)
 | | | | MethodCallExpr (methodName: foo)
 | | | | | Var (name: x)
 Error message from reference is: A class type was required, but int was found
+Error message: No Variable x was found
 
 Phase semantic failed because we expected to see:
 TYPE_ERROR
 But we actually saw:
-OK
+NO_SUCH_VARIABLE
 The difference is:
 At line   1 /   1:
 < TYPE_ERROR
-> OK
+> NO_SUCH_VARIABLE
 

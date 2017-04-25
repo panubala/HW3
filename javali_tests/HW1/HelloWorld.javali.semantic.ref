@@ -1,2 +1,2 @@
-MISSING_RETURN
-Method Main.m is missing a return statement
+DOUBLE_DECLARATION
+Method 'foo(...)' has two parameters named 'b'

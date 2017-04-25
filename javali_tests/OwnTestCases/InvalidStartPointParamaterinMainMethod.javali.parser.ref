@@ -1,0 +1,4 @@
+ClassDecl (name: Main, superClass: Object)
+| MethodDecl (argumentNames: [i, j], argumentTypes: [int, int], name: main, returnType: void)
+| | Seq ()
+| | Seq ()

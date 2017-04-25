@@ -1,0 +1,2 @@
+TYPE_ERROR
+Return statement of method with void return type should not have arguments.

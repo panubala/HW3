@@ -259,10 +259,8 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 
 	@Override
 	public TypeSymbol thisRef(ThisRef ast, SymbolTable arg) {
-
-		System.out.println("==ExprCheck - ThisRef");		
-
-		return (TypeSymbol) arg.get("This");
+		System.out.println("==ExprCheck - ThisRef");
+		return TypeChecker.symbolTable.get(arg.inClass);
 	}
 
 

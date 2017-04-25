@@ -64,7 +64,8 @@ public class SemanticAnalyzer {
 			}else if (!globalMethodTable.get("Mainmain").parameterNames.isEmpty()) {
 				System.out.println("Should be no Parameters in Main Method");
 				throw new SemanticFailure(SemanticFailure.Cause.INVALID_START_POINT, "Should be no Parameters in Main Method");
-			}
+			}else if (!globalClassTable.get("Main").get("main").equals(globalSymbolTable.get("void")))
+				throw new SemanticFailure(SemanticFailure.Cause.INVALID_START_POINT, "No Main Class found");
 			
 			System.out.println("Done with Start Point");			
 			

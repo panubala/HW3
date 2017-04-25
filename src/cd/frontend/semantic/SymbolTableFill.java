@@ -45,7 +45,6 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 	public Symbol.TypeSymbol undeclaredType(String type) {
 		System.out.println("==Filling - undeClared Type");
 		Symbol.TypeSymbol typeSymbol = (TypeSymbol) globalSymbolTable.get(type);
-
 		if (typeSymbol == null) {
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_TYPE, "Type not found");
 		}
@@ -61,7 +60,6 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 
 		System.out.println("Passed SuperClass");
 
-		// TODO: Duplicates
 		for (Ast.VarDecl varDecl : ast.fields()) {
 			if (classTables.get(ast.name).containsKey(varDecl.name))
 				throw new SemanticFailure(SemanticFailure.Cause.DOUBLE_DECLARATION);
@@ -73,7 +71,6 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 
 		}
 
-		// TODO:Duplicates
 		for (Ast.MethodDecl methodDecl : ast.methods()) {
 
 			if (classTables.get(ast.name).containsKey(methodDecl.name)){
@@ -184,12 +181,16 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 		globalSymbolTable.put(new Symbol.ArrayTypeSymbol(Symbol.TypeSymbol.ClassSymbol.objectType));
 
 		for (Ast.ClassDecl classDecl : classDecls) {
-
+			
+			if(classDecl.name.equals("Object"))
+				throw new SemanticFailure(SemanticFailure.Cause.OBJECT_CLASS_DEFINED);
+			
 			if (classTables.containsKey(classDecl.name))
 				throw new SemanticFailure(SemanticFailure.Cause.DOUBLE_DECLARATION);
 
 			classDecl.sym = new Symbol.ClassSymbol(classDecl);
 			globalSymbolTable.put(classDecl.sym);
+			globalSymbolTable.put(new Symbol.ArrayTypeSymbol(classDecl.sym));
 
 			classTables.put(classDecl.name, new SymbolTable());
 			// symbolTable.put(new Symbol.ArrayTypeSymbol(classDecl.sym));

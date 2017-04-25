@@ -115,8 +115,14 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 	@Override
 	public TypeSymbol field(Field ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - Field");
-		// TODO Auto-generated method stub
-		return super.field(ast, arg);
+
+		String fieldName = ast.fieldName;
+		TypeSymbol classN = visit(ast.arg(), arg);
+		
+		if(TypeChecker.classTable.get(classN.name).get(fieldName) == null)			
+			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_FIELD);
+				
+		return TypeChecker.classTable.get(classN.name).get(fieldName);
 	}
 
 	@Override
@@ -241,7 +247,6 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 	public TypeSymbol thisRef(ThisRef ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - ThisRef");
 		return (TypeSymbol) arg.get("This");
-
 	}
 
 	@Override

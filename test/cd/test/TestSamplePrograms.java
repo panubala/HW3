@@ -23,8 +23,8 @@ public class TestSamplePrograms extends AbstractTestAgainstFrozenReference {
 	 * {@code justFile = new File("javali_tests/HW2/Inheritance.javali")}.
 	 */
 //	public static final File justFile = new File("javali_tests/HW3/ErrCallBase.javali");
-	public static final File justFile = new File("javali_tests/HW1/HelloWorld.javali");
-//	public static final File justFile = null;
+//	public static final File justFile = new File("javali_tests/HW1/HelloWorld.javali");
+	public static final File justFile = null;
 //	public static final File justFile = new File("javali_tests/HW3/test.javali");
 
 	/**
@@ -33,8 +33,8 @@ public class TestSamplePrograms extends AbstractTestAgainstFrozenReference {
 	 * particular directory, use sth. like:
 	 * {@code testDir = new File("javali_tests/HW2/")}.
 	 */
-//	public static final File testDir = new File("javali_tests/OwnTestCases");
-	public static final File testDir = new File("javali_tests");
+	public static final File testDir = new File("javali_tests/OwnTestCases");
+//	public static final File testDir = new File("javali_tests");
 	
 	@Parameters(name="{index}:{0}")
 	public static Collection<Object[]> testFiles() {

@@ -41,6 +41,8 @@ public class SymbolTable{
 	public Set<String> getAllNames() {
 		return symbolTable.keySet();
 	}
+	
+	public String extendsFrom;
 
 	// public Set<Pair<String>> parameters = new HashSet<>();
 	public ArrayList<String> parameterNames = new ArrayList<>();
@@ -77,6 +79,7 @@ public class SymbolTable{
 
 	public void print() {
 		System.out.println("==Table: (inClass " + inClass + ")=====");
+		System.out.println("==extends from " + extendsFrom + "====");
 		System.out.println("=====Arg:======");
 		// for(Pair p: parameters){
 		// System.out.println(p.a + ": " + p.b);

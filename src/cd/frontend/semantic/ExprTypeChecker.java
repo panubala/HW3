@@ -110,10 +110,13 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 	public TypeSymbol cast(Cast ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - Cast");
 		
+		System.out.println(ast.arg());
 		System.out.println(ast.typeName);
 		
-		// TODO Auto-generated method stub
-		return super.cast(ast, arg);
+		//TODO check if cast is poss
+		visit(ast.arg(), arg); //type right side
+		
+		return TypeChecker.symbolTable.get(ast.typeName); 
 	}
 
 	@Override

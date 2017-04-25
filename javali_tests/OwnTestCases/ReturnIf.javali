@@ -1,0 +1,14 @@
+class Main {
+   void main() {	
+		
+	}
+	
+	int a(){
+		int b 
+		
+		if(true){
+			return b;
+		}else{
+		}
+	}
+}

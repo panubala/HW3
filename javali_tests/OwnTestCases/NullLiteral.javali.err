@@ -1,0 +1,22 @@
+Debug information for file: javali_tests/OwnTestCases/NullLiteral.javali
+AST Resulting From Parsing Stage:
+ClassDecl (name: Main, superClass: Object)
+| MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
+| | Seq ()
+| | | VarDecl (name: a, type: A[])
+| | Seq ()
+| | | Assign ()
+| | | | Var (name: a)
+| | | | NullConst ()
+ClassDecl (name: A, superClass: Object)
+Error message: Type not found
+
+Phase semantic failed because we expected to see:
+OK
+But we actually saw:
+NO_SUCH_TYPE
+The difference is:
+At line   1 /   1:
+< OK
+> NO_SUCH_TYPE
+

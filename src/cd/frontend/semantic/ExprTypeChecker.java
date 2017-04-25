@@ -230,7 +230,7 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 	public TypeSymbol thisRef(ThisRef ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - ThisRef");
 		
-		return arg.get("This");
+		return (TypeSymbol) arg.get("This");
 	}
 
 	@Override

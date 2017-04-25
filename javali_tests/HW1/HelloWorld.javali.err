@@ -1,3 +1,5 @@
+Debug information for file: javali_tests\HW1\HelloWorld.javali
+AST Resulting From Parsing Stage:
 ClassDecl (name: Main, superClass: Object)
 | VarDecl (name: a, type: int)
 | MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
@@ -30,3 +32,14 @@ ClassDecl (name: B, superClass: Object)
 | | Seq ()
 | | | VarDecl (name: k, type: int)
 | | Seq ()
+Error message: Assignment must have compatible types.
+
+Phase semantic failed because we expected to see:
+OK
+But we actually saw:
+TYPE_ERROR
+The difference is:
+At line   1 /   1:
+< OK
+> TYPE_ERROR
+

@@ -1,23 +1,19 @@
-class Main {
+/* Test that an invalid field name is detected */
 
-   int m() {
-      return 0;
-   }
-	
-	void main() {
-	
-	   int res;
-	   res = -1;
-	
-		m();
-      res = m();
-      write(res);
-      writeln();
-      
-      res = this.m();
-      write(res);
-      writeln();
-      
+class X {
+	int field;
+	Y ypsil;
+}
+
+class Main {
+   void main() {
+      X x;
+		x = new X();
+		z.field = 0;
+		x.notafield = 1;    /* ILLEGAL: bad field name */
 	}
-	
+}
+
+class Y{
+	boolean b;
 }

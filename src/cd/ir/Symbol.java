@@ -2,8 +2,10 @@ package cd.ir;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public abstract class Symbol {
 	
@@ -83,6 +85,8 @@ public abstract class Symbol {
 			new HashMap<String, VariableSymbol>();
 		public final Map<String, MethodSymbol> methods =
 			new HashMap<String, MethodSymbol>();
+		
+		private Set<TypeSymbol> superClasses;
 
 		/** Symbols for the built-in Object and null types */
 		public static final ClassSymbol nullType = new ClassSymbol("<null>");
@@ -106,8 +110,24 @@ public abstract class Symbol {
 		
 		public boolean isSubType(TypeSymbol type) {  
 			
-			//TODO
-			return true;
+			if (!type.isReferenceType()) {
+                return false;
+			} else if (type.equals(ClassSymbol.objectType)|| this.equals(ClassSymbol.nullType)){
+				return true;
+				
+			}
+			
+			if (this.superClasses == null) {
+	           this.superClasses = new HashSet<>();
+	           ClassSymbol current = this;
+	                while (current.superClass != null) {
+	                    this.superClasses.add(current);
+	                    current = current.superClass;
+	                }
+	            }
+	          return this.superClasses.contains(type);
+			
+		
 	         
 	    }
 		

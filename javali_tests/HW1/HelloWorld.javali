@@ -4,15 +4,21 @@ class Main {
    void main() {
      int a;
      B b;
-     b = new B();
-     a = 5;
+     //b = new B();
+     b.f(b,a);
      // write(53110);
      // writeln();    
    }
 }
 class B{
-	int f(){
-		int b;
+	int k;
+	boolean f(int a){
+		int f;
+		boolean b;
+		f = a;
 		return b;
+	}
+	void g(){
+		int k;
 	}
 }

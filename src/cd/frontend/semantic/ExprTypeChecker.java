@@ -99,6 +99,18 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable<
 	public TypeSymbol methodCall(MethodCallExpr ast, SymbolTable<VariableSymbol> arg) {
 		System.out.println("==ExprCheck - MethodCall");
 		// TODO Auto-generated method stub
+		
+		Var caller = (Var) ast.allArguments().get(0);
+		
+		String callerClass = arg.get(caller.name).name; //B
+		String calleeMethod = ast.methodName; //f
+		
+		//TODO check arguments
+		
+		if(!TypeChecker.classTable.get(callerClass).containsKey(calleeMethod))
+			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_METHOD);
+		
+		System.out.println(TypeChecker.classTable.get(callerClass).get(calleeMethod)); 
 		return super.methodCall(ast, arg);
 	}
 
@@ -155,6 +167,8 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable<
 		System.out.println("==ExprCheck - Variable");
 		// TODO Auto-generated method stub
 		//System.out.println(ast.type.name)
+		
+		arg.print();
 		
 		if(!arg.containsKey(ast.name))
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE, "No Variable " + ast.name + " was found");

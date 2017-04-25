@@ -10,6 +10,7 @@ import java.util.Set;
 import cd.ir.Ast;
 import cd.ir.Ast.Assign;
 import cd.ir.Ast.ClassDecl;
+import cd.ir.Ast.MethodCall;
 import cd.ir.Ast.MethodDecl;
 import cd.ir.Ast.ReturnStmt;
 import cd.ir.Ast.VarDecl;
@@ -18,6 +19,7 @@ import cd.ir.Symbol;
 import cd.ir.Symbol.MethodSymbol;
 import cd.ir.Symbol.TypeSymbol;
 import cd.ir.Symbol.VariableSymbol.Kind;
+import cd.util.Pair;
 
 public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Kind> {
 
@@ -78,9 +80,20 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 
 			currentScopeTable = methodTables.get(ast.name + methodDecl.name);
 
+			// Add parameters of method
+			// for(int i=0; i<methodDecl.argumentNames.size();i++){
+			// Pair p = new Pair<>(methodDecl.argumentNames.get(i),
+			// methodDecl.argumentTypes.get(i));
+			// currentScopeTable.parameters.add(p);
+			// }
+
+			for (String name : methodDecl.argumentNames) {
+				currentScopeTable.parameterNames.add(name);
+			}
+
 			Symbol.MethodSymbol method = (Symbol.MethodSymbol) visit(methodDecl, null);
 			// if(ast.sym.methods.containsKey(method.name))
-			classTables.get(ast.name).put(methodDecl.name, method);
+			classTables.get(ast.name).put(methodDecl.name, method.returnType);
 
 			// ast.sym.methods.put(method.name, method);
 			System.out.println("Method putted");
@@ -109,11 +122,20 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 	@Override
 	public Symbol methodDecl(MethodDecl ast, Kind arg) {
 		System.out.println("==Filling - MethodDecl");
+
+		// Add parameters into the table
+		for (int i = 0; i < ast.argumentNames.size(); i++) {
+			visit(new VarDecl(ast.argumentTypes.get(0), ast.argumentNames.get(0)), arg);
+		}
 		visit(ast.decls(), arg);
 
 		ast.sym = new MethodSymbol(ast);
-		
-		ast.sym.returnType = (TypeSymbol) globalSymbolTable.get(ast.returnType); //TODO check if type exists
+
+		ast.sym.returnType = (TypeSymbol) globalSymbolTable.get(ast.returnType); // TODO
+																					// check
+																					// if
+																					// type
+																					// exists
 		return ast.sym;
 	}
 
@@ -132,7 +154,7 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 	@Override
 	public Symbol returnStmt(ReturnStmt ast, Kind arg) {
 		System.out.println("==Filling - ReturnStmt");
-		// TODO Auto-generated method stub		
+		// TODO Auto-generated method stub
 		return super.returnStmt(ast, arg);
 	}
 

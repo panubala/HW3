@@ -109,32 +109,56 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 	@Override
 	public TypeSymbol cast(Cast ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - Cast");
-		
+
 		System.out.println(ast.arg());
 		System.out.println(ast.typeName);
-		
-		//TODO check if cast is poss
-		visit(ast.arg(), arg); //type right side
-		
-		return TypeChecker.symbolTable.get(ast.typeName); 
+
+		// TODO check if cast is poss
+
+		arg.print();
+		TypeSymbol tr = visit(ast.arg(), arg); // type right side
+		TypeSymbol tl = TypeChecker.symbolTable.get(ast.typeName);
+
+		if (tl == null)
+			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_TYPE);
+
+		if (!tr.equals(tl)) {
+			System.out.println("here1");
+			if (TypeChecker.classTable.get(tl.name).extendsFrom == null
+					&& TypeChecker.classTable.get(tr.name).extendsFrom == null) { // no
+																					// extend
+				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
+			} else if (TypeChecker.classTable.get(tl.name).extendsFrom != null
+					&& !TypeChecker.symbolTable.get(TypeChecker.classTable.get(tl.name).extendsFrom).equals(tr)) { // wrong
+																													// extend
+				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
+			} else if (TypeChecker.classTable.get(tr.name).extendsFrom != null
+					&& !TypeChecker.symbolTable.get(TypeChecker.classTable.get(tr.name).extendsFrom).equals(tl)) { // wrong
+																													// extend
+				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
+			}
+		}
+		return TypeChecker.symbolTable.get(ast.typeName);
+
 	}
 
 	@Override
 	public TypeSymbol field(Field ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - Field");
 
-
-
 		String fieldName = ast.fieldName;
 		TypeSymbol classN = visit(ast.arg(), arg);
-		
+
 		System.out.println("fN:" + fieldName);
 
 		System.out.println("classN:" + classN.name);
 		
-		if(TypeChecker.classTable.get(classN.name).get(fieldName) == null)			
+		if (!TypeChecker.classTable.containsKey(classN.name))
+			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
+		
+		if (TypeChecker.classTable.get(classN.name).get(fieldName) == null)
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_FIELD);
-				
+
 		return TypeChecker.classTable.get(classN.name).get(fieldName);
 
 	}
@@ -238,11 +262,16 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 		System.out.println("==ExprCheck - NewArray");
 		Symbol.TypeSymbol type = visit(ast.arg(), arg);
 
-		// if (!type.equals(PrimitiveTypeSymbol.intType)) {
-		// throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
-		// }
+		if (!type.equals(PrimitiveTypeSymbol.intType)) {
+			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
+		}
+		
+		System.out.println(ast.typeName);
+		arg.print();
 
-		Symbol.TypeSymbol typeSym = (Symbol.TypeSymbol) arg.get(ast.typeName);
+		//Symbol.TypeSymbol typeSym = (Symbol.TypeSymbol) arg.get(ast.typeName);
+
+		Symbol.TypeSymbol typeSym = (Symbol.TypeSymbol) TypeChecker.symbolTable.get(ast.typeName);
 
 		if (typeSym == null) {
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_TYPE);
@@ -262,7 +291,6 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 		System.out.println("==ExprCheck - ThisRef");
 		return TypeChecker.symbolTable.get(arg.inClass);
 	}
-
 
 	@Override
 	public TypeSymbol unaryOp(UnaryOp ast, SymbolTable arg) {
@@ -296,8 +324,8 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 	@Override
 	public TypeSymbol var(Var ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - Variable");
+
 		// TODO Auto-generated method stub
-		// System.out.println(ast.type.name)
 		if (!arg.containsKey(ast.name)) {
 			System.out.println("Failure " + ast.name);
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE, "No Variable " + ast.name + " was found");

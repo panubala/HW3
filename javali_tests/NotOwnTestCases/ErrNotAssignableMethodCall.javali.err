@@ -1,0 +1,26 @@
+Debug information for file: javali_tests\NotOwnTestCases\ErrNotAssignableMethodCall.javali
+AST Resulting From Parsing Stage:
+ClassDecl (name: Main, superClass: Object)
+| MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
+| | Seq ()
+| | Seq ()
+| | | Assign ()
+| | | | MethodCallExpr (methodName: f)
+| | | | | ThisRef ()
+| | | | BooleanConst (value: true)
+| MethodDecl (argumentNames: [], argumentTypes: [], name: f, returnType: boolean)
+| | Seq ()
+| | Seq ()
+| | | ReturnStmt ()
+| | | | BooleanConst (value: true)
+Error message from reference is: 'this.f(...)' is not a valid lvalue
+
+Phase semantic failed because we expected to see:
+NOT_ASSIGNABLE
+But we actually saw:
+OK
+The difference is:
+At line   1 /   1:
+< NOT_ASSIGNABLE
+> OK
+

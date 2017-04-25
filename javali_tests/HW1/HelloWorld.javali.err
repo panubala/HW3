@@ -1,0 +1,24 @@
+Debug information for file: javali_tests\HW1\HelloWorld.javali
+AST Resulting From Parsing Stage:
+ClassDecl (name: Main, superClass: Object)
+| MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
+| | Seq ()
+| | Seq ()
+ClassDecl (name: B, superClass: Object)
+| VarDecl (name: main, type: int)
+| MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: int)
+| | Seq ()
+| | Seq ()
+| | | ReturnStmt ()
+| | | | Var (name: main)
+Error message: DOUBLE_DECLARATION
+
+Phase semantic failed because we expected to see:
+OK
+But we actually saw:
+DOUBLE_DECLARATION
+The difference is:
+At line   1 /   1:
+< OK
+> DOUBLE_DECLARATION
+

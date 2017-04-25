@@ -1,0 +1,25 @@
+Debug information for file: javali_tests\NotOwnTestCases\ErrTypeErrorCast.javali
+AST Resulting From Parsing Stage:
+ClassDecl (name: Main, superClass: Object)
+| MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
+| | Seq ()
+| | | VarDecl (name: a, type: A)
+| | | VarDecl (name: b, type: B)
+| | Seq ()
+| | | Assign ()
+| | | | Var (name: a)
+| | | | Cast (typeName: A)
+| | | | | Var (name: b)
+ClassDecl (name: A, superClass: Object)
+ClassDecl (name: B, superClass: Object)
+Error message from reference is: Types B and A in cast are completely unrelated.
+
+Phase semantic failed because we expected to see:
+TYPE_ERROR
+But we actually saw:
+OK
+The difference is:
+At line   1 /   1:
+< TYPE_ERROR
+> OK
+

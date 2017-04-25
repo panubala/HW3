@@ -1,0 +1,35 @@
+Debug information for file: javali_tests\NotOwnTestCases\ErrMissingReturnWhile.javali
+AST Resulting From Parsing Stage:
+ClassDecl (name: Main, superClass: Object)
+| MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
+| | Seq ()
+| | Seq ()
+ClassDecl (name: A, superClass: Object)
+| MethodDecl (argumentNames: [], argumentTypes: [], name: method, returnType: boolean)
+| | Seq ()
+| | | VarDecl (name: a, type: int)
+| | Seq ()
+| | | WhileLoop ()
+| | | | BinaryOp (operator: B_LESS_THAN)
+| | | | | IntConst (value: 0)
+| | | | | Var (name: a)
+| | | | Seq ()
+| | | | | Assign ()
+| | | | | | Var (name: a)
+| | | | | | BinaryOp (operator: B_MINUS)
+| | | | | | | Var (name: a)
+| | | | | | | IntConst (value: 1)
+| | | | | ReturnStmt ()
+| | | | | | BooleanConst (value: false)
+Error message from reference is: Method A.method is missing a return statement
+Error message: No Variable a was found
+
+Phase semantic failed because we expected to see:
+MISSING_RETURN
+But we actually saw:
+NO_SUCH_VARIABLE
+The difference is:
+At line   1 /   1:
+< MISSING_RETURN
+> NO_SUCH_VARIABLE
+

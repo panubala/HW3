@@ -42,7 +42,10 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	@Override
 	public Void assign(Assign ast, Void arg) {
 		System.out.println("==StmtCheck - Assign");
-
+				
+		if(!(ast.left() instanceof Ast.Var) && !(ast.left() instanceof Ast.Field) && !(ast.left() instanceof Ast.Index))
+			throw new SemanticFailure(SemanticFailure.Cause.NOT_ASSIGNABLE);
+		
 		Symbol.TypeSymbol leftType = exprChecker.visit(ast.left(),
 				TypeChecker.methodTable.get(currentClass + currentMethod.name));
 		Symbol.TypeSymbol rightType = exprChecker.visit(ast.right(),
@@ -220,7 +223,7 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	@Override
 	public Void whileLoop(WhileLoop ast, Void arg) {
 		System.out.println("==StmtCheck - WhileLoop");
-		Symbol.TypeSymbol conditionType = exprChecker.visit(ast.condition(), TypeChecker.symbolTable);
+		Symbol.TypeSymbol conditionType = exprChecker.visit(ast.condition(), TypeChecker.methodTable.get(currentClass + currentMethod.name));
 
 		if (!conditionType.equals(Symbol.PrimitiveTypeSymbol.booleanType)) {
 			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR,

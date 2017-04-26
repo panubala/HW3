@@ -1,27 +1,22 @@
 package cd.frontend.semantic;
 
-import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import cd.ir.Ast;
-import cd.ir.Ast.Assign;
 import cd.ir.Ast.ClassDecl;
-import cd.ir.Ast.MethodCall;
 import cd.ir.Ast.MethodDecl;
-import cd.ir.Ast.ReturnStmt;
 import cd.ir.Ast.VarDecl;
 import cd.ir.AstVisitor;
 import cd.ir.Symbol;
 import cd.ir.Symbol.MethodSymbol;
 import cd.ir.Symbol.TypeSymbol;
 import cd.ir.Symbol.VariableSymbol.Kind;
-import cd.util.Pair;
 
 public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Kind> {
 
@@ -64,7 +59,7 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 																						// same
 																						// fieldName
 			currentScopeTable = classTables.get(ast.name);
-			Symbol.VariableSymbol field = (Symbol.VariableSymbol) visit(varDecl, Symbol.VariableSymbol.Kind.FIELD);
+			visit(varDecl, Symbol.VariableSymbol.Kind.FIELD);
 			// ast.sym.fields.put(field.name, field);
 		}
 
@@ -94,35 +89,10 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 				currentScopeTable.parameterNames.add(name);
 			}
 
-			// for (String name : classTables.get(ast.name).getAllFieldNames()){
-			// }
-
 			Symbol.MethodSymbol method = (Symbol.MethodSymbol) visit(methodDecl, null);
-			// if(ast.sym.methods.containsKey(method.name))
 			classTables.get(ast.name).putFunction(methodDecl.name, method.returnType);
-
-			// ast.sym.methods.put(method.name, method);
-			System.out.println("Method putted");
 		}
-
-		System.out.println("Added MethodDecl");
-
-		// TODO: Duplicates
-		// for (Ast.VarDecl varDecl : ast.fields()) {
-		// Symbol.VariableSymbol field = (Symbol.VariableSymbol) visit(varDecl,
-		// Symbol.VariableSymbol.Kind.FIELD);
-		// ast.sym.fields.put(field.name, field);
-		// }
-
 		return ast.sym;
-	}
-
-	@Override
-	public Symbol assign(Assign ast, Kind arg) {
-		System.out.println("==Filling - Assign");
-
-		// TODO Auto-generated method stub
-		return super.assign(ast, arg);
 	}
 
 	@Override
@@ -166,13 +136,6 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 			throw new SemanticFailure(SemanticFailure.Cause.DOUBLE_DECLARATION);
 		currentScopeTable.putField(ast.name, typeSymbol);
 		return ast.sym;
-	}
-
-	@Override
-	public Symbol returnStmt(ReturnStmt ast, Kind arg) {
-		System.out.println("==Filling - ReturnStmt");
-		// TODO Auto-generated method stub
-		return super.returnStmt(ast, arg);
 	}
 
 	public void fillTable(List<Ast.ClassDecl> classDecls) {
@@ -221,13 +184,14 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 	}
 
 	private void inheritClassFieldsAndMethods(List<ClassDecl> classDecls) {
-		
-		List<String> alreadyVisited = new ArrayList<>();;
-		
-		while(alreadyVisited.size() != classDecls.size()){
+
+		List<String> alreadyVisited = new ArrayList<>();
+		;
+
+		while (alreadyVisited.size() != classDecls.size()) {
 			for (Ast.ClassDecl classDecl : classDecls) {
-				if(!alreadyVisited.contains(classDecl.name)){
-					if(classDecl.superClass.equals("Object") || alreadyVisited.contains(classDecl.superClass)){
+				if (!alreadyVisited.contains(classDecl.name)) {
+					if (classDecl.superClass.equals("Object") || alreadyVisited.contains(classDecl.superClass)) {
 						inheritClassFieldsAndMethod(classDecl);
 						alreadyVisited.add(classDecl.name);
 					}
@@ -235,8 +199,8 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 			}
 		}
 	}
-	
-	private void inheritClassFieldsAndMethod(Ast.ClassDecl classDecl){
+
+	private void inheritClassFieldsAndMethod(Ast.ClassDecl classDecl) {
 
 		if (!classDecl.superClass.equals("Object")) {
 
@@ -244,21 +208,21 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 			SymbolTable orClass = classTables.get(classDecl.name);
 
 			orClass.extendsFrom.add(classDecl.superClass);
-			
+
 			orClass.extendsFrom.addAll(superClass.extendsFrom);
-			
+
 			// override Field in orClass
 			for (String fieldName : superClass.getAllFieldNames()) {
 				if (!orClass.containsField(fieldName)) { // dont exist
 					orClass.putField(fieldName, superClass.getFieldType(fieldName));
-					
-					//Add fields in the corresponding Methods
-					for(String fncName : orClass.getAllFunctionNames()){
+
+					// Add fields in the corresponding Methods
+					for (String fncName : orClass.getAllFunctionNames()) {
 						SymbolTable methTbl = methodTables.get(classDecl.name + fncName);
-						if(!methTbl.containsField(fieldName)){
+						if (!methTbl.containsField(fieldName)) {
 							methTbl.putField(fieldName, superClass.getFieldType(fieldName));
 						}
-					}					
+					}
 				} else if (orClass.getFieldType(fieldName).equals(superClass.getFieldType(fieldName))) { // checktype
 					orClass.putField(fieldName, superClass.getFieldType(fieldName));
 				} else {
@@ -307,7 +271,7 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 				}
 			}
 		}
-		
+
 	}
 
 	private void inheritanceCheck() {

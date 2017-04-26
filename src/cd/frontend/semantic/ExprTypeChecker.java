@@ -24,18 +24,6 @@ import cd.ir.Symbol.TypeSymbol;
 public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable> {
 
 	@Override
-	public TypeSymbol visit(Expr ast, SymbolTable arg) {
-		// TODO Auto-generated method stub
-		return super.visit(ast, arg);
-	}
-
-	@Override
-	public TypeSymbol visitChildren(Expr ast, SymbolTable arg) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(ast, arg);
-	}
-
-	@Override
 	public TypeSymbol binaryOp(BinaryOp ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - BinaryOP");
 
@@ -109,12 +97,6 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 	public TypeSymbol cast(Cast ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - Cast");
 
-		System.out.println(ast.arg());
-		System.out.println(ast.typeName);
-
-		// TODO check if cast is poss
-
-		arg.print();
 		TypeSymbol tr = visit(ast.arg(), arg); // type right side
 		TypeSymbol tl = TypeChecker.symbolTable.get(ast.typeName);
 
@@ -122,42 +104,13 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_TYPE);
 
 		if (!tr.equals(tl)) {
-			System.out.println("here1");
-			
-			System.out.println(TypeChecker.classTable.get(tl.name).extendsFrom);
-			System.out.println(tr.name);
-			System.out.println(TypeChecker.classTable.get(tr.name).extendsFrom);
-			
-			if(TypeChecker.classTable.get(tl.name).extendsFrom.contains(tr.name) || TypeChecker.classTable.get(tr.name).extendsFrom.contains(tl.name)){
-				//OK
-			}else{
+
+			if (TypeChecker.classTable.get(tl.name).extendsFrom.contains(tr.name)
+					|| TypeChecker.classTable.get(tr.name).extendsFrom.contains(tl.name)) {
+				// Cast Possible
+			} else {
 				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
 			}
-			
-				
-//			String extendL = TypeChecker.classTable.get(tl.name).extendsFromm;
-//			String extendR = TypeChecker.classTable.get(tr.name).extendsFromm;
-//			if (extendL == null	&& extendR == null) { // no																			// extend
-//				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
-//			}
-//			else if(extendL != null && extendR == null && !TypeChecker.symbolTable.get(extendL).equals(tr)){
-//				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
-//			}
-//			else if(extendR != null && extendL == null && !TypeChecker.symbolTable.get(extendR).equals(tl)){
-//				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
-//			}
-			
-			
-			
-//			else if (TypeChecker.classTable.get(tl.name).extendsFrom != null
-//					&& !TypeChecker.symbolTable.get(TypeChecker.classTable.get(tl.name).extendsFrom).equals(tr)) { // wrong
-//																													// extend
-//				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
-//			} else if (TypeChecker.classTable.get(tr.name).extendsFrom != null
-//					&& !TypeChecker.symbolTable.get(TypeChecker.classTable.get(tr.name).extendsFrom).equals(tl)) { // wrong
-//																													// extend
-//				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
-//			}
 		}
 		return TypeChecker.symbolTable.get(ast.typeName);
 
@@ -217,36 +170,18 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 
 		if (ast.allArguments().get(0) instanceof Ast.ThisRef) {
 			callerClass = arg.inClass;
-		}else if(ast.allArguments().get(0) instanceof Ast.MethodCallExpr){
+		} else if (ast.allArguments().get(0) instanceof Ast.MethodCallExpr) {
 			MethodCallExpr e = (MethodCallExpr) ast.allArguments().get(0);
-			System.out.println(e.methodName);		
-			//TODO check if exist
+			System.out.println(e.methodName);
 			callerClass = arg.inClass;
-			
-		}else if(ast.allArguments().get(0) instanceof Ast.Field){
+
+		} else if (ast.allArguments().get(0) instanceof Ast.Field) {
 			Field f = (Field) ast.allArguments().get(0);
-			System.out.println(f.fieldName);		
-			//TODO check if exist
+			System.out.println(f.fieldName);
 			callerClass = arg.inClass;
-			
+
 		} else {
-			
-			
-			System.out.println(ast.allArguments());
-			
 			Var caller = (Var) ast.allArguments().get(0);
-
-			// if(TypeChecker.methodTable.get(currentClass+currentMethod.name)
-			// == null)
-			// throw new
-			// SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE); //TODO
-			// //Error correct?
-			//
-			// if(TypeChecker.methodTable.get(currentClass+currentMethod.name).get(caller.name)
-			// == null)
-			// throw new
-			// SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE);
-
 			callerClass = arg.getFieldType(caller.name).name;
 		}
 		String calleeMethod = ast.methodName;
@@ -275,9 +210,9 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 			TypeSymbol typCal = TypeChecker.methodTable.get(callerClass + calleeMethod).getFieldType(argName);
 
 			if (!typCal.equals(argumentType)) {
-				
+
 				System.out.println(TypeChecker.classTable.get(typCal.name));
-				
+
 				if (TypeChecker.classTable.get(argumentType.name).extendsFrom != null
 						&& TypeChecker.classTable.get(argumentType.name).extendsFrom.contains(typCal.name)) {
 				} else {
@@ -368,8 +303,6 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 	@Override
 	public TypeSymbol var(Var ast, SymbolTable arg) {
 		System.out.println("==ExprCheck - Variable");
-
-		// TODO Auto-generated method stub
 
 		if (!arg.containsField(ast.name)) {
 			System.out.println("Failure " + ast.name);

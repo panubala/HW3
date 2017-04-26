@@ -1,51 +1,40 @@
 package cd.frontend.semantic;
 
-import java.util.List;
 import java.util.Map;
 
 import cd.ir.Ast;
 import cd.ir.Ast.Assign;
 import cd.ir.Ast.BuiltInWrite;
-import cd.ir.Ast.BuiltInWriteln;
 import cd.ir.Ast.ClassDecl;
 import cd.ir.Ast.Expr;
 import cd.ir.Ast.IfElse;
 import cd.ir.Ast.MethodCall;
-import cd.ir.Ast.MethodCallExpr;
 import cd.ir.Ast.MethodDecl;
-import cd.ir.Ast.Nop;
 import cd.ir.Ast.ReturnStmt;
-import cd.ir.Ast.Seq;
 import cd.ir.Ast.Var;
-import cd.ir.Ast.VarDecl;
 import cd.ir.Ast.WhileLoop;
 import cd.ir.AstVisitor;
 import cd.ir.Symbol;
-import cd.ir.Symbol.ClassSymbol;
 import cd.ir.Symbol.MethodSymbol;
 import cd.ir.Symbol.PrimitiveTypeSymbol;
 
-//TODO Void, Void?
 public class StmtTypeChecker extends AstVisitor<Void, Void> {
-	// private SymbolTable globalSymboltable;
 	private ExprTypeChecker exprChecker;
 	private MethodSymbol currentMethod;
 	private String currentClass;
-	private Map<String, Symbol.MethodSymbol> methods;
 
 	public StmtTypeChecker(Symbol.ClassSymbol classSymbol) {
-		// TODO Auto-generated constructor stub
-		this.methods = classSymbol.methods;
 		this.exprChecker = new ExprTypeChecker();
 	}
 
 	@Override
 	public Void assign(Assign ast, Void arg) {
 		System.out.println("==StmtCheck - Assign");
-				
-		if(!(ast.left() instanceof Ast.Var) && !(ast.left() instanceof Ast.Field) && !(ast.left() instanceof Ast.Index))
+
+		if (!(ast.left() instanceof Ast.Var) && !(ast.left() instanceof Ast.Field)
+				&& !(ast.left() instanceof Ast.Index))
 			throw new SemanticFailure(SemanticFailure.Cause.NOT_ASSIGNABLE);
-		
+
 		Symbol.TypeSymbol leftType = exprChecker.visit(ast.left(),
 				TypeChecker.methodTable.get(currentClass + currentMethod.name));
 		Symbol.TypeSymbol rightType = exprChecker.visit(ast.right(),
@@ -76,7 +65,6 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	@Override
 	public Void classDecl(ClassDecl ast, Void arg) {
 		System.out.println("==StmtCheck - classDecl");
-		// TODO Auto-generated method stub
 		currentClass = ast.name;
 
 		return super.classDecl(ast, arg);
@@ -88,9 +76,7 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 
 		currentMethod = ast.sym;
 
-		// localSymbolTable = new SymbolTable<>();
-
-		visit(ast.decls(), arg); // TODO ?
+		visit(ast.decls(), arg);
 		Void result = visit(ast.body(), null);
 
 		// check return Stmt
@@ -107,31 +93,15 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 				throw new SemanticFailure(SemanticFailure.Cause.MISSING_RETURN);
 			}
 		}
-		
-//		if (!ast.returnType.equals("void")){
-//			if(!TypeChecker.methodTable.get(currentClass + currentMethod.name).hasReturnStmt){
-//				throw new SemanticFailure(SemanticFailure.Cause.MISSING_RETURN);
-//			}
-//		}
-			
-		// currentMethod = null;
-
 		return result;
-	}
-
-	@Override
-	public Void varDecl(VarDecl ast, Void arg) {
-		System.out.println("==StmtCheck - VarDecl");
-		// TODO Auto-generated method stub
-
-		return super.varDecl(ast, arg);
 	}
 
 	@Override
 	public Void ifElse(IfElse ast, Void arg) {
 		System.out.println("==StmtCheck - IfElse");
 
-		Symbol.TypeSymbol conditionType = exprChecker.visit(ast.condition(), TypeChecker.methodTable.get(currentClass + currentMethod.name));
+		Symbol.TypeSymbol conditionType = exprChecker.visit(ast.condition(),
+				TypeChecker.methodTable.get(currentClass + currentMethod.name));
 
 		if (!conditionType.equals(Symbol.PrimitiveTypeSymbol.booleanType)) {
 			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR,
@@ -146,9 +116,10 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	@Override
 	public Void returnStmt(ReturnStmt ast, Void arg) {
 		System.out.println("==StmtCheck - Return");
-		
-		//TypeChecker.methodTable.get(currentClass + currentMethod.name).hasReturnStmt=true;
-		
+
+		// TypeChecker.methodTable.get(currentClass +
+		// currentMethod.name).hasReturnStmt=true;
+
 		if (ast.arg() == null) {
 			if (!currentMethod.returnType.equals(PrimitiveTypeSymbol.voidType)) {
 				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
@@ -199,12 +170,12 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 		for (int i = 0; i < ast.getMethodCallExpr().argumentsWithoutReceiver().size(); i++) {
 
 			Expr argument = ast.getMethodCallExpr().argumentsWithoutReceiver().get(i);
-			
+
 			Symbol.TypeSymbol argumentType = exprChecker.visit(argument,
 					TypeChecker.methodTable.get(currentClass + currentMethod.name));
 
 			String argName = TypeChecker.methodTable.get(callerClass + calleeMethod).parameterNames.get(i).toString();
-			
+
 			if (!TypeChecker.methodTable.get(callerClass + calleeMethod).getFieldType(argName).equals(argumentType))
 				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
 
@@ -218,7 +189,8 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 	@Override
 	public Void whileLoop(WhileLoop ast, Void arg) {
 		System.out.println("==StmtCheck - WhileLoop");
-		Symbol.TypeSymbol conditionType = exprChecker.visit(ast.condition(), TypeChecker.methodTable.get(currentClass + currentMethod.name));
+		Symbol.TypeSymbol conditionType = exprChecker.visit(ast.condition(),
+				TypeChecker.methodTable.get(currentClass + currentMethod.name));
 
 		if (!conditionType.equals(Symbol.PrimitiveTypeSymbol.booleanType)) {
 			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR,

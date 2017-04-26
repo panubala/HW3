@@ -36,11 +36,11 @@ public class TypeTable {
 	}
 
 	public Collection<ClassSymbol> getAllClassSymbols() {
-		Collection<TypeSymbol> allSymbols = getAllSymbols(); //TODO not everythin in here?
-		ArrayList result = new ArrayList<>();
+		Collection<TypeSymbol> allSymbols = getAllSymbols();
+		ArrayList<ClassSymbol> result = new ArrayList<>();
 		for (Symbol s : allSymbols) {
-			if (s instanceof Symbol.ClassSymbol) { //TODO not everythin in here?
-				result.add(s);
+			if (s instanceof Symbol.ClassSymbol) {
+				result.add((Symbol.ClassSymbol) s);
 			}
 		}
 		return result;

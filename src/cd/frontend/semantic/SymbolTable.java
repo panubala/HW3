@@ -10,9 +10,8 @@ import java.util.Set;
 import cd.ir.Symbol;
 import cd.ir.Symbol.TypeSymbol;
 
-public class SymbolTable{
+public class SymbolTable {
 
-	
 	private Map<String, TypeSymbol> fieldTable = new HashMap<>();
 	private Map<String, TypeSymbol> functionTable = new HashMap<>();
 
@@ -23,12 +22,12 @@ public class SymbolTable{
 		this.fieldTable = fieldTable;
 		this.functionTable = functionTable;
 	}
-	
-	public Map<String, TypeSymbol> wholefunctionTable(){
+
+	public Map<String, TypeSymbol> wholefunctionTable() {
 		return functionTable;
 	}
-	
-	public Map<String, TypeSymbol> wholefieldTable(){
+
+	public Map<String, TypeSymbol> wholefieldTable() {
 		return fieldTable;
 	}
 
@@ -36,46 +35,45 @@ public class SymbolTable{
 		TypeSymbol type = functionTable.get(fncName);
 		return type;
 	}
-	
+
 	public TypeSymbol getFieldType(String fncName) {
 		TypeSymbol type = fieldTable.get(fncName);
 		return type;
 	}
-	
+
 	public Collection<TypeSymbol> getAllFunctionType() {
 		return functionTable.values();
 	}
-	
+
 	public Collection<TypeSymbol> getAllFieldType() {
 		return fieldTable.values();
 	}
-	
+
 	public Set<String> getAllFunctionNames() {
 		return functionTable.keySet();
 	}
-	
+
 	public Set<String> getAllFieldNames() {
 		return fieldTable.keySet();
 	}
-	
-	
+
 	public Collection<TypeSymbol> getAllTypeSymbols() {
 		Collection<TypeSymbol> c = fieldTable.values();
 		c.addAll(functionTable.values());
 		return c;
 	}
-	
+
 	public Set<String> getAllNames() {
 		Set<String> c = fieldTable.keySet();
 		c.addAll(functionTable.keySet());
 		return c;
 	}
-	
+
 	public Set<String> extendsFrom = new HashSet<>();
 
 	// public Set<Pair<String>> parameters = new HashSet<>();
 	public ArrayList<String> parameterNames = new ArrayList<>();
-	
+
 	public String inClass;
 
 	public Collection<Symbol.ClassSymbol> getAllClassSymbols() {
@@ -92,7 +90,7 @@ public class SymbolTable{
 	public void putFunction(String fncName, TypeSymbol symbol) {
 		functionTable.put(fncName, symbol);
 	}
-	
+
 	public void putField(String fieldName, TypeSymbol symbol) {
 		fieldTable.put(fieldName, symbol);
 	}
@@ -100,18 +98,18 @@ public class SymbolTable{
 	public boolean containsFunction(String fncName) {
 		return functionTable.containsKey(fncName);
 	}
-	
+
 	public boolean containsField(String fieldName) {
 		return fieldTable.containsKey(fieldName);
 	}
-	
+
 	public boolean containss(String name) {
-		return containsField(name) || containsFunction(name); 
+		return containsField(name) || containsFunction(name);
 	}
 
-//	public boolean containsType(TypeSymbol type) {
-//		return symbolTable.containsValue(type);
-//	}
+	// public boolean containsType(TypeSymbol type) {
+	// return symbolTable.containsValue(type);
+	// }
 
 	public void print() {
 		System.out.println("==Table: (inClass " + inClass + ")=====");
@@ -138,6 +136,6 @@ public class SymbolTable{
 		System.out.println("================");
 	}
 
-	//public boolean hasReturnStmt;
+	// public boolean hasReturnStmt;
 
 }

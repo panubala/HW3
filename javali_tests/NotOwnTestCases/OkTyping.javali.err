@@ -1,4 +1,4 @@
-Debug information for file: javali_tests/NotOwnTestCases/OkTyping.javali
+Debug information for file: javali_tests\NotOwnTestCases\OkTyping.javali
 AST Resulting From Parsing Stage:
 ClassDecl (name: Main, superClass: Object)
 | VarDecl (name: main, type: int)
@@ -93,14 +93,14 @@ ClassDecl (name: C, superClass: Object)
 | | | | BinaryOp (operator: B_LESS_THAN)
 | | | | | Var (name: i)
 | | | | | Var (name: j)
-Error message: No Variable h was found
+Error message: TYPE_ERROR
 
 Phase semantic failed because we expected to see:
 OK
 But we actually saw:
-NO_SUCH_VARIABLE
+TYPE_ERROR
 The difference is:
 At line   1 /   1:
 < OK
-> NO_SUCH_VARIABLE
+> TYPE_ERROR
 

@@ -20,7 +20,6 @@ import cd.ir.ExprVisitor;
 import cd.ir.Symbol;
 import cd.ir.Symbol.PrimitiveTypeSymbol;
 import cd.ir.Symbol.TypeSymbol;
-import cd.ir.Symbol.VariableSymbol;
 
 public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable> {
 
@@ -196,7 +195,23 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 
 		if (ast.allArguments().get(0) instanceof Ast.ThisRef) {
 			callerClass = arg.inClass;
+		}else if(ast.allArguments().get(0) instanceof Ast.MethodCallExpr){
+			MethodCallExpr e = (MethodCallExpr) ast.allArguments().get(0);
+			System.out.println(e.methodName);		
+			//TODO check if exist
+			callerClass = arg.inClass;
+			
+		}else if(ast.allArguments().get(0) instanceof Ast.Field){
+			Field f = (Field) ast.allArguments().get(0);
+			System.out.println(f.fieldName);		
+			//TODO check if exist
+			callerClass = arg.inClass;
+			
 		} else {
+			
+			
+			System.out.println(ast.allArguments());
+			
 			Var caller = (Var) ast.allArguments().get(0);
 
 			// if(TypeChecker.methodTable.get(currentClass+currentMethod.name)
@@ -217,7 +232,6 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 		if (TypeChecker.classTable.get(callerClass) == null)
 			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
 
-		System.out.println(calleeMethod);
 		if (!TypeChecker.classTable.get(callerClass).containsFunction(calleeMethod))
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_METHOD);
 
@@ -277,9 +291,6 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
 		}
 
-		System.out.println(ast.typeName);
-		arg.print();
-
 		// Symbol.TypeSymbol typeSym = (Symbol.TypeSymbol)
 		// arg.get(ast.typeName);
 
@@ -338,7 +349,7 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 		System.out.println("==ExprCheck - Variable");
 
 		// TODO Auto-generated method stub
-		arg.print();
+
 		if (!arg.containsField(ast.name)) {
 			System.out.println("Failure " + ast.name);
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE, "No Variable " + ast.name + " was found");

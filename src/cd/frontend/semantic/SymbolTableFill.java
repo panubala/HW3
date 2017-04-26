@@ -93,9 +93,9 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 					throw new SemanticFailure(SemanticFailure.Cause.DOUBLE_DECLARATION);
 				currentScopeTable.parameterNames.add(name);
 			}
-			
-			//for (String name : classTables.get(ast.name).getAllFieldNames()){
-			//}
+
+			// for (String name : classTables.get(ast.name).getAllFieldNames()){
+			// }
 
 			Symbol.MethodSymbol method = (Symbol.MethodSymbol) visit(methodDecl, null);
 			// if(ast.sym.methods.containsKey(method.name))
@@ -133,7 +133,16 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 		for (int i = 0; i < ast.argumentNames.size(); i++) {
 			visit(new VarDecl(ast.argumentTypes.get(i), ast.argumentNames.get(i)), arg);
 		}
+
+		// Add Declarations into the table
 		visit(ast.decls(), arg);
+
+		// Add Fields of the Class into the table
+		SymbolTable classTabl = classTables.get(currentScopeTable.inClass);
+		for (String fieldName : classTabl.getAllFieldNames()) {
+			if (!currentScopeTable.containsField(fieldName))
+				currentScopeTable.putField(fieldName, classTabl.getFieldType(fieldName));
+		}
 
 		ast.sym = new MethodSymbol(ast);
 
@@ -206,86 +215,98 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 
 		inheritanceCheck();
 
+		inheritClassFieldsAndMethods(classDecls);
 		// Inheritence
-		for (Ast.ClassDecl classDecl : classDecls) {
-			if (!classDecl.superClass.equals("Object")) {
-				
-				SymbolTable superClass = classTables.get(classDecl.superClass);
-				SymbolTable orClass = classTables.get(classDecl.name);
 
-				orClass.extendsFrom = classDecl.superClass;
+	}
 
-				// override Field in orClass
-				for (String fieldName : superClass.getAllFieldNames()) {
-					if (!orClass.containsField(fieldName))
-						orClass.putField(fieldName, superClass.getFieldType(fieldName)); // insert
-																							// if
-																							// not
-																							// there
-					else if (orClass.getFieldType(fieldName).equals(superClass.getFieldType(fieldName))) { // check
-																											// if
-																											// same
-																											// type
-						orClass.putField(fieldName, superClass.getFieldType(fieldName)); // override
-																							// it
-					} else {
-						throw new SemanticFailure(SemanticFailure.Cause.INVALID_OVERRIDE);
-					}
-				}
-
-				// override Method in orClass
-				for (String fncName : superClass.getAllFunctionNames()) {
-					
-					if (!orClass.containsFunction(fncName)) { // not in the
-																// original
-																// class
-						orClass.putFunction(fncName, superClass.getFunctionType(fncName));
-
-						Map<String, TypeSymbol> orFncTbl = methodTables.get(classDecl.superClass + fncName)
-								.wholefunctionTable();
-						Map<String, TypeSymbol> orFieldTbl = methodTables.get(classDecl.superClass + fncName)
-								.wholefieldTable();
-
-						SymbolTable newTable = new SymbolTable(orFieldTbl, orFncTbl);
-						newTable.parameterNames = methodTables.get(classDecl.superClass + fncName).parameterNames;
-						newTable.inClass = classDecl.name;
-						methodTables.put(classDecl.name + fncName, newTable);
-					} else if (!orClass.getFunctionType(fncName).equals(superClass.getFunctionType(fncName))) {
-						throw new SemanticFailure(SemanticFailure.Cause.INVALID_OVERRIDE,
-								"Overridden method method has not the same return type as the original");
-					} else if (methodTables.get(classDecl.superClass + fncName).parameterNames
-							.size() != methodTables.get(classDecl.name + fncName).parameterNames.size()) {
-						
-						System.out.println(classDecl.superClass + fncName);
-						methodTables.get(classDecl.superClass + fncName).print();
-						System.out.println(classDecl.name + fncName);
-						methodTables.get(classDecl.name + fncName).print();
-						
-						System.out.println(methodTables.get(classDecl.superClass + fncName).parameterNames
-							.size());
-						System.out.println(methodTables.get(classDecl.name + fncName).parameterNames.size());
-						throw new SemanticFailure(SemanticFailure.Cause.INVALID_OVERRIDE,
-								"Overridden method method has not the same amount of parameters as the original has");
-					} else { // Check if every Type is the same
-
-						ArrayList<String> params = methodTables.get(classDecl.superClass + fncName).parameterNames;
-						SymbolTable methTablSuper = methodTables.get(classDecl.superClass + fncName);
-						SymbolTable methTablOr = methodTables.get(classDecl.name + fncName);
-						
-						for (int i = 0; i < params.size(); i++) {
-							String nameSu = methTablSuper.parameterNames.get(i);
-							String nameOr = methTablOr.parameterNames.get(i);
-							
-							if (!methTablSuper.getFieldType(nameSu).equals(methTablOr.getFieldType(nameOr)))
-								throw new SemanticFailure(SemanticFailure.Cause.INVALID_OVERRIDE,
-										"Overridden method method has not the same parameter-type as the original");
-						}
+	private void inheritClassFieldsAndMethods(List<ClassDecl> classDecls) {
+		
+		List<String> alreadyVisited = new ArrayList<>();;
+		
+		while(alreadyVisited.size() != classDecls.size()){
+			for (Ast.ClassDecl classDecl : classDecls) {
+				if(!alreadyVisited.contains(classDecl.name)){
+					if(classDecl.superClass.equals("Object") || alreadyVisited.contains(classDecl.superClass)){
+						inheritClassFieldsAndMethod(classDecl);
+						alreadyVisited.add(classDecl.name);
 					}
 				}
 			}
 		}
 	}
 	
+	private void inheritClassFieldsAndMethod(Ast.ClassDecl classDecl){
+
+		if (!classDecl.superClass.equals("Object")) {
+
+			SymbolTable superClass = classTables.get(classDecl.superClass);
+			SymbolTable orClass = classTables.get(classDecl.name);
+
+			orClass.extendsFrom = classDecl.superClass;
+
+			// override Field in orClass
+			for (String fieldName : superClass.getAllFieldNames()) {
+				if (!orClass.containsField(fieldName)) { // dont exist
+					orClass.putField(fieldName, superClass.getFieldType(fieldName));
+					
+					//Add fields in the corresponding Methods
+					for(String fncName : orClass.getAllFunctionNames()){
+						SymbolTable methTbl = methodTables.get(classDecl.name + fncName);
+						if(!methTbl.containsField(fieldName)){
+							methTbl.putField(fieldName, superClass.getFieldType(fieldName));
+						}
+					}					
+				} else if (orClass.getFieldType(fieldName).equals(superClass.getFieldType(fieldName))) { // checktype
+					orClass.putField(fieldName, superClass.getFieldType(fieldName));
+				} else {
+					throw new SemanticFailure(SemanticFailure.Cause.INVALID_OVERRIDE);
+				}
+			}
+
+			// override Methods in orClass
+			for (String fncName : superClass.getAllFunctionNames()) {
+
+				if (!orClass.containsFunction(fncName)) { // not in the
+															// original
+															// class
+					orClass.putFunction(fncName, superClass.getFunctionType(fncName));
+
+					Map<String, TypeSymbol> orFncTbl = methodTables.get(classDecl.superClass + fncName)
+							.wholefunctionTable();
+					Map<String, TypeSymbol> orFieldTbl = methodTables.get(classDecl.superClass + fncName)
+							.wholefieldTable();
+
+					SymbolTable newTable = new SymbolTable(orFieldTbl, orFncTbl);
+					newTable.parameterNames = methodTables.get(classDecl.superClass + fncName).parameterNames;
+					newTable.inClass = classDecl.name;
+					methodTables.put(classDecl.name + fncName, newTable);
+				} else if (!orClass.getFunctionType(fncName).equals(superClass.getFunctionType(fncName))) {
+					throw new SemanticFailure(SemanticFailure.Cause.INVALID_OVERRIDE,
+							"Overridden method method has not the same return type as the original");
+				} else if (methodTables.get(classDecl.superClass + fncName).parameterNames
+						.size() != methodTables.get(classDecl.name + fncName).parameterNames.size()) {
+					throw new SemanticFailure(SemanticFailure.Cause.INVALID_OVERRIDE,
+							"Overridden method method has not the same amount of parameters as the original");
+				} else { // Check if every Type is the same
+
+					ArrayList<String> params = methodTables.get(classDecl.superClass + fncName).parameterNames;
+					SymbolTable methTablSuper = methodTables.get(classDecl.superClass + fncName);
+					SymbolTable methTablOr = methodTables.get(classDecl.name + fncName);
+
+					for (int i = 0; i < params.size(); i++) {
+						String nameSu = methTablSuper.parameterNames.get(i);
+						String nameOr = methTablOr.parameterNames.get(i);
+
+						if (!methTablSuper.getFieldType(nameSu).equals(methTablOr.getFieldType(nameOr)))
+							throw new SemanticFailure(SemanticFailure.Cause.INVALID_OVERRIDE,
+									"Overridden method method has not the same parameter-type as the original");
+					}
+				}
+			}
+		}
+		
+	}
 
 	private void inheritanceCheck() {
 

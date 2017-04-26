@@ -25,7 +25,7 @@ import cd.util.Pair;
 
 public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Kind> {
 
-	private SymbolTable globalSymbolTable;
+	private TypeTable globalSymbolTable;
 	private HashMap<String, SymbolTable> classTables = new HashMap<>(); // Key:
 																		// ClassNames
 	private HashMap<String, SymbolTable> methodTables = new HashMap<>(); // Key:
@@ -35,9 +35,9 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 
 	private SymbolTable currentScopeTable;
 
-	public SymbolTableFill(SymbolTable symbolTable, HashMap<String, SymbolTable> globalClassTable,
+	public SymbolTableFill(TypeTable allTypes, HashMap<String, SymbolTable> globalClassTable,
 			HashMap<String, SymbolTable> globalMethodTable) {
-		this.globalSymbolTable = symbolTable;
+		this.globalSymbolTable = allTypes;
 		this.classTables = globalClassTable;
 		this.methodTables = globalMethodTable;
 	}
@@ -45,42 +45,40 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 	public Symbol.TypeSymbol undeclaredType(String type) {
 		System.out.println("==Filling - undeClared Type");
 		Symbol.TypeSymbol typeSymbol = (TypeSymbol) globalSymbolTable.get(type);
-		
+
 		if (typeSymbol == null) {
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_TYPE, "Type not found");
 		}
 		return typeSymbol;
 	}
 
-	
 	@Override
 	public Symbol classDecl(ClassDecl ast, Kind arg) {
 		System.out.println("==Filling - ClassDecl");
-	
+
 		ast.sym.superClass = (Symbol.ClassSymbol) undeclaredType(ast.superClass);
 
-		System.out.println("Passed SuperClass");
-
 		for (Ast.VarDecl varDecl : ast.fields()) {
-			if (classTables.get(ast.name).containsKey(varDecl.name))
-				throw new SemanticFailure(SemanticFailure.Cause.DOUBLE_DECLARATION);
-
+			if (classTables.get(ast.name).containsField(varDecl.name))
+				throw new SemanticFailure(SemanticFailure.Cause.DOUBLE_DECLARATION); // twice
+																						// same
+																						// fieldName
 			currentScopeTable = classTables.get(ast.name);
 			Symbol.VariableSymbol field = (Symbol.VariableSymbol) visit(varDecl, Symbol.VariableSymbol.Kind.FIELD);
-
 			// ast.sym.fields.put(field.name, field);
-
 		}
 
 		for (Ast.MethodDecl methodDecl : ast.methods()) {
-			
-			globalSymbolTable.print();
-			
-			if (classTables.get(ast.name).containsKey(methodDecl.name)){
-				if (classTables.get(ast.name).containsType(globalSymbolTable.get(methodDecl.returnType))) {
-					throw new SemanticFailure(SemanticFailure.Cause.DOUBLE_DECLARATION);
+
+			String fncName = methodDecl.name;
+
+			if (classTables.get(ast.name).containsFunction(fncName)) {
+				if (classTables.get(ast.name).getFunctionType(fncName).equals(methodDecl.returnType)) {
+					throw new SemanticFailure(SemanticFailure.Cause.DOUBLE_DECLARATION); // twice
+																							// same
+																							// method
 				}
-				if (methodTables.containsKey(ast.name + methodDecl.name)){
+				if (methodTables.containsKey(ast.name + methodDecl.name)) {
 					throw new SemanticFailure(SemanticFailure.Cause.DOUBLE_DECLARATION);
 				}
 			}
@@ -89,22 +87,19 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 			currentScopeTable = methodTables.get(ast.name + methodDecl.name);
 
 			currentScopeTable.inClass = ast.name;
-			// Add parameters of method
-			// for(int i=0; i<methodDecl.argumentNames.size();i++){
-			// Pair p = new Pair<>(methodDecl.argumentNames.get(i),
-			// methodDecl.argumentTypes.get(i));
-			// currentScopeTable.parameters.add(p);
-			// }
 
 			for (String name : methodDecl.argumentNames) {
-				if(currentScopeTable.parameterNames.contains(name))
+				if (currentScopeTable.parameterNames.contains(name))
 					throw new SemanticFailure(SemanticFailure.Cause.DOUBLE_DECLARATION);
 				currentScopeTable.parameterNames.add(name);
 			}
+			
+			//for (String name : classTables.get(ast.name).getAllFieldNames()){
+			//}
 
 			Symbol.MethodSymbol method = (Symbol.MethodSymbol) visit(methodDecl, null);
 			// if(ast.sym.methods.containsKey(method.name))
-			classTables.get(ast.name).put(methodDecl.name, method.returnType);
+			classTables.get(ast.name).putFunction(methodDecl.name, method.returnType);
 
 			// ast.sym.methods.put(method.name, method);
 			System.out.println("Method putted");
@@ -142,12 +137,12 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 
 		ast.sym = new MethodSymbol(ast);
 
-		TypeSymbol returnType = (TypeSymbol) globalSymbolTable.get(ast.returnType); 
-		if(returnType == null){
+		TypeSymbol returnType = (TypeSymbol) globalSymbolTable.get(ast.returnType);
+		if (returnType == null) {
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_TYPE);
 		}
 		ast.sym.returnType = returnType;
-		
+
 		return ast.sym;
 	}
 
@@ -158,10 +153,9 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 
 		ast.sym = new Symbol.VariableSymbol(ast.name, typeSymbol, arg);
 
-		System.out.println(typeSymbol.name);
-		if(currentScopeTable.containsKey(ast.name))
+		if (currentScopeTable.containsField(ast.name))
 			throw new SemanticFailure(SemanticFailure.Cause.DOUBLE_DECLARATION);
-		currentScopeTable.put(ast.name, typeSymbol);
+		currentScopeTable.putField(ast.name, typeSymbol);
 		return ast.sym;
 	}
 
@@ -187,10 +181,10 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 		globalSymbolTable.put(new Symbol.ArrayTypeSymbol(Symbol.TypeSymbol.ClassSymbol.objectType));
 
 		for (Ast.ClassDecl classDecl : classDecls) {
-			
-			if(classDecl.name.equals("Object"))
+
+			if (classDecl.name.equals("Object"))
 				throw new SemanticFailure(SemanticFailure.Cause.OBJECT_CLASS_DEFINED);
-			
+
 			if (classTables.containsKey(classDecl.name))
 				throw new SemanticFailure(SemanticFailure.Cause.DOUBLE_DECLARATION);
 
@@ -211,44 +205,87 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 		System.out.println("Table filled");
 
 		inheritanceCheck();
-		
-		
-		//Inheritence
+
+		// Inheritence
 		for (Ast.ClassDecl classDecl : classDecls) {
 			if (!classDecl.superClass.equals("Object")) {
-
+				
 				SymbolTable superClass = classTables.get(classDecl.superClass);
 				SymbolTable orClass = classTables.get(classDecl.name);
-				
+
 				orClass.extendsFrom = classDecl.superClass;
-				
-				for (String name : superClass.getAllNames()) { //name: all Vari/Field in superClass
-					if (!orClass.containsKey(name) || orClass.get(name).equals(superClass.get(name))) { //Does not have super method or have it but same type
-						orClass.put(name, superClass.get(name));
-						if (methodTables.containsKey(classDecl.superClass + name)) {
-							if(!methodTables.containsKey(classDecl.name + name)) {								
-								SymbolTable newTable = new SymbolTable(methodTables.get(classDecl.superClass + name).wholeTable());
-								newTable.inClass = classDecl.name;
-								methodTables.put(classDecl.name + name, newTable);
-							} else if(methodTables.get(classDecl.superClass + name).parameterNames.size() != 
-									methodTables.get(classDecl.name + name).parameterNames.size()){//already exist but with wrong number of parameters
-								throw new SemanticFailure(SemanticFailure.Cause.INVALID_OVERRIDE, "Overridden method method has not the same amount of parameters as the original has");
-							} else { //Check if every Type is the same
-								for(String param : methodTables.get(classDecl.superClass + name).parameterNames){
-									if(!methodTables.get(classDecl.superClass + name).get(param).equals(methodTables.get(classDecl.name + name).get(param))){
-										throw new SemanticFailure(SemanticFailure.Cause.INVALID_OVERRIDE, "Overridden method method has not the same parameter-type as the original");
-									}
-								}
-							}
-						}
-					} else{
+
+				// override Field in orClass
+				for (String fieldName : superClass.getAllFieldNames()) {
+					if (!orClass.containsField(fieldName))
+						orClass.putField(fieldName, superClass.getFieldType(fieldName)); // insert
+																							// if
+																							// not
+																							// there
+					else if (orClass.getFieldType(fieldName).equals(superClass.getFieldType(fieldName))) { // check
+																											// if
+																											// same
+																											// type
+						orClass.putField(fieldName, superClass.getFieldType(fieldName)); // override
+																							// it
+					} else {
 						throw new SemanticFailure(SemanticFailure.Cause.INVALID_OVERRIDE);
+					}
+				}
+
+				// override Method in orClass
+				for (String fncName : superClass.getAllFunctionNames()) {
+					
+					if (!orClass.containsFunction(fncName)) { // not in the
+																// original
+																// class
+						orClass.putFunction(fncName, superClass.getFunctionType(fncName));
+
+						Map<String, TypeSymbol> orFncTbl = methodTables.get(classDecl.superClass + fncName)
+								.wholefunctionTable();
+						Map<String, TypeSymbol> orFieldTbl = methodTables.get(classDecl.superClass + fncName)
+								.wholefieldTable();
+
+						SymbolTable newTable = new SymbolTable(orFieldTbl, orFncTbl);
+						newTable.parameterNames = methodTables.get(classDecl.superClass + fncName).parameterNames;
+						newTable.inClass = classDecl.name;
+						methodTables.put(classDecl.name + fncName, newTable);
+					} else if (!orClass.getFunctionType(fncName).equals(superClass.getFunctionType(fncName))) {
+						throw new SemanticFailure(SemanticFailure.Cause.INVALID_OVERRIDE,
+								"Overridden method method has not the same return type as the original");
+					} else if (methodTables.get(classDecl.superClass + fncName).parameterNames
+							.size() != methodTables.get(classDecl.name + fncName).parameterNames.size()) {
+						
+						System.out.println(classDecl.superClass + fncName);
+						methodTables.get(classDecl.superClass + fncName).print();
+						System.out.println(classDecl.name + fncName);
+						methodTables.get(classDecl.name + fncName).print();
+						
+						System.out.println(methodTables.get(classDecl.superClass + fncName).parameterNames
+							.size());
+						System.out.println(methodTables.get(classDecl.name + fncName).parameterNames.size());
+						throw new SemanticFailure(SemanticFailure.Cause.INVALID_OVERRIDE,
+								"Overridden method method has not the same amount of parameters as the original has");
+					} else { // Check if every Type is the same
+
+						ArrayList<String> params = methodTables.get(classDecl.superClass + fncName).parameterNames;
+						SymbolTable methTablSuper = methodTables.get(classDecl.superClass + fncName);
+						SymbolTable methTablOr = methodTables.get(classDecl.name + fncName);
+						
+						for (int i = 0; i < params.size(); i++) {
+							String nameSu = methTablSuper.parameterNames.get(i);
+							String nameOr = methTablOr.parameterNames.get(i);
+							
+							if (!methTablSuper.getFieldType(nameSu).equals(methTablOr.getFieldType(nameOr)))
+								throw new SemanticFailure(SemanticFailure.Cause.INVALID_OVERRIDE,
+										"Overridden method method has not the same parameter-type as the original");
+						}
 					}
 				}
 			}
 		}
-
 	}
+	
 
 	private void inheritanceCheck() {
 
@@ -257,10 +294,6 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 		Collection<Symbol.ClassSymbol> classSyms = globalSymbolTable.getAllClassSymbols();
 
 		for (Symbol.ClassSymbol classSym : classSyms) {
-			
-			
-			
-			
 			Set<String> checked = new HashSet<>();
 
 			Symbol.ClassSymbol current = classSym;
@@ -278,7 +311,5 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 			}
 		}
 	}
-	
-	
 
 }

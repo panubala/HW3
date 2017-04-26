@@ -7,12 +7,13 @@ import java.util.Map;
 
 import cd.Main;
 import cd.ir.Ast.ClassDecl;
+import cd.ir.Symbol.TypeSymbol;
 import cd.ir.Symbol;
 
 public class SemanticAnalyzer {
 	
 	public final Main main;	
-	private SymbolTable globalSymbolTable = new SymbolTable();
+	private TypeTable allTypes = new TypeTable();
 	private HashMap<String, SymbolTable> globalClassTable = new HashMap<>();
 	private HashMap<String, SymbolTable> globalMethodTable = new HashMap<>();
 	
@@ -25,12 +26,12 @@ public class SemanticAnalyzer {
 			System.out.println("checking...");
 			
 			//new SymbolTableFill(globalScopeSymbolTable).fillTable(classDecls);		
-			new SymbolTableFill(globalSymbolTable, globalClassTable, globalMethodTable).fillTable(classDecls);		
+			new SymbolTableFill(allTypes, globalClassTable, globalMethodTable).fillTable(classDecls);		
 			
 			////Printing:
 			System.out.println("Global Table:");
 			System.out.println("-------------");
-			globalSymbolTable.print();
+			allTypes.print();
 			System.out.println();
 			
 			System.out.println("Class Table:");
@@ -64,12 +65,12 @@ public class SemanticAnalyzer {
 			}else if (!globalMethodTable.get("Mainmain").parameterNames.isEmpty()) {
 				System.out.println("Should be no Parameters in Main Method");
 				throw new SemanticFailure(SemanticFailure.Cause.INVALID_START_POINT, "Should be no Parameters in Main Method");
-			}else if (!globalClassTable.get("Main").get("main").equals(globalSymbolTable.get("void")))
+			}else if (!globalClassTable.get("Main").getFunctionType("main").equals(allTypes.get("void")))
 				throw new SemanticFailure(SemanticFailure.Cause.INVALID_START_POINT, "No Main Class found");
 			
 			System.out.println("Done with Start Point");			
 			
-			new TypeChecker(globalSymbolTable, globalClassTable, globalMethodTable).check(classDecls);
+			new TypeChecker(allTypes, globalClassTable, globalMethodTable).check(classDecls);
 		}
 	}
 

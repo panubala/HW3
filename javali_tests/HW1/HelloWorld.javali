@@ -1,41 +1,21 @@
-// The Javali language maintains three different namespaces:
-// - Types
-// - Methods
-// - Fields, variables and parameters
 
 class Main {
-    void main() {}
-}
-
-// There is no conflict between the method A() and the type A.
-//class A {
-//    void A() {}
-//}
-
-// There is also no conflict between the field main and the method main().
-class B {
-    int main;
-    int main() {
-        return main;
+    void main() {
     }
 }
 
-// We can have a local variable List of type List.
-//class C {
-//    void method() {
-//        List List;
-//        List = new List();
-//    }
-//}
+class A {
+}
 
-// There is no conflict between the method List(), the parameter List and the type List.
-//class List {
-//    boolean List(int List) {
-//        List l;
-//        l = new List();
-//        if (List(32)) {
-//            write(List);
-//        }
-//        return List < 0;
-//    }
-//}
+class B {
+    int  b(boolean b, int i, A a) {
+        return i;
+    }
+}
+
+class C extends B {
+    int b(boolean c, int d , A e) {
+		 return d;
+    }
+}
+

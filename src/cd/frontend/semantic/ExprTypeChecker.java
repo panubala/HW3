@@ -152,14 +152,14 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 		System.out.println("fN:" + fieldName);
 
 		System.out.println("classN:" + classN.name);
-		
+
 		if (!TypeChecker.classTable.containsKey(classN.name))
 			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
-		
-		if (TypeChecker.classTable.get(classN.name).get(fieldName) == null)
+
+		if (TypeChecker.classTable.get(classN.name).getFieldType(fieldName) == null)
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_FIELD);
 
-		return TypeChecker.classTable.get(classN.name).get(fieldName);
+		return TypeChecker.classTable.get(classN.name).getFieldType(fieldName);
 
 	}
 
@@ -203,14 +203,14 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 			// == null)
 			// throw new
 			// SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE); //TODO
-			// Error correct?
+			// //Error correct?
 			//
 			// if(TypeChecker.methodTable.get(currentClass+currentMethod.name).get(caller.name)
 			// == null)
 			// throw new
 			// SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE);
 
-			callerClass = arg.get(caller.name).name;
+			callerClass = arg.getFieldType(caller.name).name;
 		}
 		String calleeMethod = ast.methodName;
 
@@ -218,7 +218,7 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
 
 		System.out.println(calleeMethod);
-		if (!TypeChecker.classTable.get(callerClass).containsKey(calleeMethod))
+		if (!TypeChecker.classTable.get(callerClass).containsFunction(calleeMethod))
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_METHOD);
 
 		if (TypeChecker.methodTable.get(callerClass + calleeMethod).parameterNames.size() != ast
@@ -233,18 +233,29 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 
 			String argName = TypeChecker.methodTable.get(callerClass + calleeMethod).parameterNames.get(i).toString();
 
-			System.out.println(TypeChecker.methodTable.get(callerClass + calleeMethod).get(argName));
+			System.out.println(TypeChecker.methodTable.get(callerClass + calleeMethod).getFieldType(argName).name);
+			System.out.println(argumentType.name);
 
-			System.out.println("here: " + argumentType.name);
+			TypeSymbol typCal = TypeChecker.methodTable.get(callerClass + calleeMethod).getFieldType(argName);
 
-			if (!TypeChecker.methodTable.get(callerClass + calleeMethod).get(argName).equals(argumentType))
-				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
+			if (!typCal.equals(argumentType)) {
+				
+				System.out.println(TypeChecker.classTable.get(typCal.name));
+				
+				if (TypeChecker.classTable.get(argumentType.name).extendsFrom != null
+						&& TypeChecker.classTable.get(argumentType.name).extendsFrom
+								.equals(typCal.name)) {
+				} else {
+					throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
+				}
+
+			}
 
 		}
 
-		System.out.println(TypeChecker.classTable.get(callerClass).get(calleeMethod));
+		System.out.println(TypeChecker.classTable.get(callerClass).getFunctionType(calleeMethod));
 
-		return TypeChecker.classTable.get(callerClass).get(calleeMethod);
+		return TypeChecker.classTable.get(callerClass).getFunctionType(calleeMethod);
 
 	}
 
@@ -265,11 +276,12 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 		if (!type.equals(PrimitiveTypeSymbol.intType)) {
 			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
 		}
-		
+
 		System.out.println(ast.typeName);
 		arg.print();
 
-		//Symbol.TypeSymbol typeSym = (Symbol.TypeSymbol) arg.get(ast.typeName);
+		// Symbol.TypeSymbol typeSym = (Symbol.TypeSymbol)
+		// arg.get(ast.typeName);
 
 		Symbol.TypeSymbol typeSym = (Symbol.TypeSymbol) TypeChecker.symbolTable.get(ast.typeName);
 
@@ -326,11 +338,12 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 		System.out.println("==ExprCheck - Variable");
 
 		// TODO Auto-generated method stub
-		if (!arg.containsKey(ast.name)) {
+		arg.print();
+		if (!arg.containsField(ast.name)) {
 			System.out.println("Failure " + ast.name);
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE, "No Variable " + ast.name + " was found");
 		}
-		return arg.get(ast.name);
+		return arg.getFieldType(ast.name);
 	}
 
 }

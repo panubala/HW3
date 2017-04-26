@@ -11,15 +11,15 @@ public class TypeChecker { // TODO why TypeChecker? Does it only check types?
 
 	private StmtTypeChecker stmtChecker;
 	
-	static public SymbolTable symbolTable;
+	static public TypeTable symbolTable;
 	static public HashMap<String, SymbolTable> classTable;	//Key: "className"
 	static public HashMap<String, SymbolTable> methodTable; //Key: "className" + "methodName"
 
-	public TypeChecker(SymbolTable symbolTable, HashMap<String, SymbolTable> classTable,
+	public TypeChecker(TypeTable allTypes, HashMap<String, SymbolTable> classTable,
 			HashMap<String, SymbolTable> methodTable) {
-		this.symbolTable = symbolTable;
-		this.classTable = classTable;
-		this.methodTable = methodTable;
+		TypeChecker.symbolTable = allTypes;
+		TypeChecker.classTable = classTable;
+		TypeChecker.methodTable = methodTable;
 		
 	}
 

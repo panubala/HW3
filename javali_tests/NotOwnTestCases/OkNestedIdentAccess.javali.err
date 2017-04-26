@@ -131,14 +131,14 @@ ClassDecl (name: C, superClass: Object)
 | | Seq ()
 | | | ReturnStmt ()
 | | | | Var (name: a)
-Error message: WRONG_NUMBER_OF_ARGUMENTS
+Error message: No Variable array was found
 
 Phase semantic failed because we expected to see:
 OK
 But we actually saw:
-WRONG_NUMBER_OF_ARGUMENTS
+NO_SUCH_VARIABLE
 The difference is:
 At line   1 /   1:
 < OK
-> WRONG_NUMBER_OF_ARGUMENTS
+> NO_SUCH_VARIABLE
 

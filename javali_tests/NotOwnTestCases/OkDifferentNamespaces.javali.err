@@ -43,14 +43,14 @@ ClassDecl (name: List, superClass: Object)
 | | | | BinaryOp (operator: B_LESS_THAN)
 | | | | | Var (name: List)
 | | | | | IntConst (value: 0)
-Error message: DOUBLE_DECLARATION
+Error message: No Variable main was found
 
 Phase semantic failed because we expected to see:
 OK
 But we actually saw:
-DOUBLE_DECLARATION
+NO_SUCH_VARIABLE
 The difference is:
 At line   1 /   1:
 < OK
-> DOUBLE_DECLARATION
+> NO_SUCH_VARIABLE
 

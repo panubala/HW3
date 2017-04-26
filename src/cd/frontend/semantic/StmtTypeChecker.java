@@ -174,14 +174,11 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 		} else {
 			Var caller = (Var) ast.getMethodCallExpr().allArguments().get(0);
 			if (TypeChecker.methodTable.get(currentClass + currentMethod.name) == null)
-				throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE); // TODO
-																					// Error
-																					// correct?
-
-			if (TypeChecker.methodTable.get(currentClass + currentMethod.name).get(caller.name) == null)
+				throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE);
+			if (TypeChecker.methodTable.get(currentClass + currentMethod.name).getFieldType(caller.name) == null)
 				throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_VARIABLE);
 
-			callerClass = TypeChecker.methodTable.get(currentClass + currentMethod.name).get(caller.name).name;
+			callerClass = TypeChecker.methodTable.get(currentClass + currentMethod.name).getFieldType(caller.name).name;
 		}
 		String calleeMethod = ast.getMethodCallExpr().methodName;
 
@@ -191,7 +188,7 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 			throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
 
 		System.out.println(calleeMethod);
-		if (!TypeChecker.classTable.get(callerClass).containsKey(calleeMethod))
+		if (!TypeChecker.classTable.get(callerClass).containsFunction(calleeMethod))
 			throw new SemanticFailure(SemanticFailure.Cause.NO_SUCH_METHOD);
 
 		if (TypeChecker.methodTable.get(callerClass + calleeMethod).parameterNames.size() != ast.getMethodCallExpr()
@@ -202,15 +199,13 @@ public class StmtTypeChecker extends AstVisitor<Void, Void> {
 		for (int i = 0; i < ast.getMethodCallExpr().argumentsWithoutReceiver().size(); i++) {
 
 			Expr argument = ast.getMethodCallExpr().argumentsWithoutReceiver().get(i);
+			
 			Symbol.TypeSymbol argumentType = exprChecker.visit(argument,
 					TypeChecker.methodTable.get(currentClass + currentMethod.name));
 
 			String argName = TypeChecker.methodTable.get(callerClass + calleeMethod).parameterNames.get(i).toString();
-
-			System.out.println(TypeChecker.methodTable.get(callerClass + calleeMethod).get(argName));
-			System.out.println(argumentType);
-
-			if (!TypeChecker.methodTable.get(callerClass + calleeMethod).get(argName).equals(argumentType))
+			
+			if (!TypeChecker.methodTable.get(callerClass + calleeMethod).getFieldType(argName).equals(argumentType))
 				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
 
 		}

@@ -1,0 +1,15 @@
+//This Reference 2
+
+
+class Main {
+    void main() {}
+}
+
+class A extends B {
+    void method() {
+        B b;
+        b = this;
+    }
+}
+
+class B {}

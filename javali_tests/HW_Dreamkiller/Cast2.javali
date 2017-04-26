@@ -1,0 +1,11 @@
+//Casting wrong primitive type
+
+class Main {
+    void main() {
+        int i;
+        boolean b;
+
+        i = 10;
+        b = (boolean) i;
+    }
+}

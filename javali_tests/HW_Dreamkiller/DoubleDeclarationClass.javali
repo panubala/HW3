@@ -1,0 +1,20 @@
+//Double Declaration of class
+
+class Main {
+    void main() {
+    }
+}
+
+class A{
+    int i;
+}
+
+class B {
+    void bla(){
+    }
+}
+
+class A {
+    boolean b;
+}
+

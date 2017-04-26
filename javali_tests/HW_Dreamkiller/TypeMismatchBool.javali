@@ -1,0 +1,9 @@
+//Type Mismatch Int and Boolean
+
+
+class Main {
+    void main() {
+        int a;
+        a = true;
+    }
+}

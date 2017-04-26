@@ -1,7 +1,0 @@
-class Main {
-	int i;
-    void main() {
-    	boolean i;
-    }
-}
-

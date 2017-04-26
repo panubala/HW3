@@ -1,6 +1,0 @@
-class Main {
-    void main() {
-        boolean b;
-        b = 0x0;
-    }
-}

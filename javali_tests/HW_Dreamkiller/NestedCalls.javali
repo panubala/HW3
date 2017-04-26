@@ -1,0 +1,26 @@
+//Nested Calls
+
+
+class A {
+    
+
+    int test(int i) {
+        return i;
+    }
+}
+
+
+
+class C {
+	int foo;
+	foo = 5;
+}
+
+class Main {
+    void main() {
+
+
+        write(c.test(c.foo));
+   
+	}
+}

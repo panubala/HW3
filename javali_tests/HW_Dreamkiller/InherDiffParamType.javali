@@ -1,0 +1,19 @@
+//Different parameter type in inheritance
+
+
+class Foo {
+    void foo(boolean b) {
+        return void;
+    }
+}
+
+class Bar extends Foo {
+    void foo(int i) {
+        return void;
+    }
+}
+
+class Main {
+    void main() {
+    }
+}

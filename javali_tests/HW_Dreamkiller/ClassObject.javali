@@ -1,0 +1,9 @@
+//Object Class Defined
+
+class Object {
+}
+
+class Main {
+    void main() {
+    }
+}

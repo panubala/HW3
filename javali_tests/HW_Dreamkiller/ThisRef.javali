@@ -1,0 +1,13 @@
+//This Reference
+
+
+class Main {
+    void main() {
+
+        this.f();
+    }
+
+    boolean f() {
+        return true;
+    }
+}

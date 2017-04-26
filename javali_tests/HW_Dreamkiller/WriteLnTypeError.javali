@@ -1,0 +1,11 @@
+//WriteLn Type Error
+
+class Main {
+    void main() {
+
+		boolean b;
+		b = true;
+        writeln(b);
+   
+	}
+}

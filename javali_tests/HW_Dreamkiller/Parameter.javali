@@ -1,0 +1,14 @@
+//Wrong use of parameter
+
+
+class Main {
+    void main() {
+        int i;
+        i = 4;
+        this.f(i, i);
+    }
+
+    boolean f(int i, boolean j) {
+        return true;
+    }
+}

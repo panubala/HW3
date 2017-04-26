@@ -1,0 +1,11 @@
+//Write Type Error
+
+class Main {
+    void main() {
+
+		boolean b;
+		b = true;
+        write(b);
+   
+	}
+}

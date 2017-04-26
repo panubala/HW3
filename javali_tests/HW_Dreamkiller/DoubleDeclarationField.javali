@@ -1,0 +1,11 @@
+//Double Declaration of field with two different type
+
+class Main {
+    void main() {
+    }
+}
+
+class A {
+    int i;
+    boolean i;
+}

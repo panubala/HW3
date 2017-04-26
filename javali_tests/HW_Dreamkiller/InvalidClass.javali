@@ -1,0 +1,13 @@
+//Inherits invalid class
+
+
+class Foo {
+}
+
+class Bar extends Boo {
+}
+
+class Main {
+    void main() {
+    }
+}

@@ -1,0 +1,7 @@
+//main method has parameters
+
+
+class Main {
+    void main (int i, int j) {
+    }
+}

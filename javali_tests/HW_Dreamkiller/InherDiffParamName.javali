@@ -1,0 +1,23 @@
+//Different parameter name in inheritance
+
+
+class Main {
+    void main() {
+    }
+}
+
+class A {
+}
+
+class B {
+    int  b(boolean b, int i, A a) {
+        return i;
+    }
+}
+
+class C extends B {
+    int b(boolean c, int d , A e) {
+		 return d;
+    }
+}
+

@@ -1,0 +1,7 @@
+//Wrong Main class
+
+
+class Test {
+    void main () {
+    }
+}

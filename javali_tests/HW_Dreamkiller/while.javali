@@ -1,0 +1,8 @@
+//Type Mismatch whilecondition
+
+
+class Main {
+    void main() {
+        while(0){}
+    }
+}

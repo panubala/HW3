@@ -1,0 +1,18 @@
+//Ifelse: Reachable controlflow has no return
+
+
+class Main {
+   void main() {	
+		
+	}
+	
+	int a(){
+		int b 
+		
+		if(true){
+			
+		}else{
+			return b;
+		}
+	}
+}

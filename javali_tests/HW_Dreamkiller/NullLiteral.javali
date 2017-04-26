@@ -1,0 +1,11 @@
+//Null Literal
+
+
+class Main {
+    void main() {
+        A[] a;
+        a = null;
+    }
+}
+
+class A {}

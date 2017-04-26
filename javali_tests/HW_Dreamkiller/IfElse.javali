@@ -1,0 +1,7 @@
+//Wrong type for if-condition
+
+
+class Main {
+    void main() {
+        if(0){}
+    }

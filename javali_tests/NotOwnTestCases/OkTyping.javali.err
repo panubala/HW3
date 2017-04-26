@@ -1,4 +1,4 @@
-Debug information for file: javali_tests\NotOwnTestCases\OkTyping.javali
+Debug information for file: javali_tests/NotOwnTestCases/OkTyping.javali
 AST Resulting From Parsing Stage:
 ClassDecl (name: Main, superClass: Object)
 | VarDecl (name: main, type: int)

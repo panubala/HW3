@@ -1,0 +1,10 @@
+//Class extends a primitive type
+
+
+class Foo extends int {
+}
+
+class Main {
+    void main() {
+    }
+}

@@ -1,0 +1,13 @@
+//namespace
+
+
+class Main {
+    int main ;
+    void main () {
+        A a;
+        a = new A();
+    }
+}
+
+class A {
+}

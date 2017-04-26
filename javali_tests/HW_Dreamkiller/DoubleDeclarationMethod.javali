@@ -1,0 +1,14 @@
+//Double Declaration of method with two different type.
+
+class Main {
+    void main() {
+    }
+}
+
+class A {
+    int a() {
+    }
+
+    void a() {
+    }
+}

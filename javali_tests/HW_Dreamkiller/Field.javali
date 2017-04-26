@@ -1,0 +1,14 @@
+//Access the field
+
+class Main {
+    void main() {
+
+		b = new A();
+		b.a = 5;
+   
+	}
+}
+
+class A{
+	int a;
+}

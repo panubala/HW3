@@ -1,0 +1,10 @@
+//Invalid start point: main method has return type int
+
+
+class Main {
+    int main () {
+    	int i;
+    	i = 5;
+    	return i;
+    }
+}

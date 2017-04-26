@@ -1,0 +1,8 @@
+//No Variable Declaration
+
+
+class Main {
+    void main() {
+        x = 1;
+    }
+}

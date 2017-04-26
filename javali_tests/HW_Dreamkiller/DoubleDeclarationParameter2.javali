@@ -1,0 +1,12 @@
+//Double Declaration of parameter with different type.
+
+class Main {
+    void main() {
+    }
+}
+
+class A {
+    int a (int i, boolean i, boolean b) {
+        return i;
+    }
+}

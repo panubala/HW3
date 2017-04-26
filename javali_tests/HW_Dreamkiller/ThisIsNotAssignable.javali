@@ -1,0 +1,12 @@
+//this is not assignable
+
+class Main {
+    void main() {}
+}
+
+class A {
+    void method() {
+        A a;
+        this = a;
+    }
+}

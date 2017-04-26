@@ -1,0 +1,12 @@
+//Wrong Number of Arguments
+
+class Main {
+    void main() {
+        A a;
+        a.method(0);
+    }
+}
+
+class A {
+    void method(int a, boolean b) {}
+}

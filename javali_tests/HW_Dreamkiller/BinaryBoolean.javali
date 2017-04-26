@@ -1,0 +1,11 @@
+//Operands of Boolean operation should be Boolean
+
+class Main {
+    void main() {
+        A a;
+        boolean result;
+        result = a && 0;
+    }
+}
+
+class A {}

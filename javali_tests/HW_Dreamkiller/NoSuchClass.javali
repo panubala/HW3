@@ -1,0 +1,8 @@
+//Class doesn't exist
+
+class Main {
+    void main() {
+        A a;
+        boolean b;
+    }
+}

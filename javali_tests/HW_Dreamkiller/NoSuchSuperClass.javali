@@ -1,0 +1,7 @@
+//Undeclared superclass
+
+class Main {
+    void main() {}
+}
+
+class A extends B {}

@@ -1,0 +1,11 @@
+//Methods are not assignable
+
+class Main {
+    void main() {
+        f() = true;
+    }
+
+    boolean f() {
+        return true;
+    }
+}

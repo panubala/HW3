@@ -1,0 +1,12 @@
+//Referenced Field doesn't exist
+
+class Main {
+    void main() {
+        A a;
+        a = a.f;
+    }
+}
+
+class A {
+    void method() {}
+}

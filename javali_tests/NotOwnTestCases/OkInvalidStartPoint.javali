@@ -1,7 +1,0 @@
-// Main correctly inherits method main() with the required signature.
-
-class Main extends A {}
-
-class A {
-    void main() {}
-}

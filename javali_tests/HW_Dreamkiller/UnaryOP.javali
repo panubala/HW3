@@ -1,0 +1,11 @@
+//Operands of Unary Operation need to be Integer
+
+class Main {
+    void main() {
+        A a;
+        int result;
+        result = -a;
+    }
+}
+
+class A {}

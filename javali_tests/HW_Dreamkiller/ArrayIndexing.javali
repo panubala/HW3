@@ -1,0 +1,14 @@
+//In the square brackets the type should be Integer
+
+class Main {
+    void main() {}
+}
+
+class A {
+    void method() {
+        A[] array;
+        A a;
+        int i;
+        array[true] = a;
+    }
+}

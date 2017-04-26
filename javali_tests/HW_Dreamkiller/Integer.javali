@@ -1,0 +1,12 @@
+//Variable of type a cannot use methods of class A
+
+class Main {
+    void main() {
+        int a;
+        a.method();
+    }
+}
+
+class A {
+    void method() {}
+}

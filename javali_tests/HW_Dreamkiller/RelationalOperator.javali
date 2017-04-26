@@ -1,0 +1,11 @@
+//Operands of Relational Operands need to be Integer
+
+class Main {
+    void main() {
+        A a;
+        boolean r;
+        r = a <= 0;
+    }
+}
+
+class A {}

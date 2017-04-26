@@ -1,0 +1,9 @@
+//Parameter and local Variable have the same name
+
+class Main {
+    void main() {}
+
+    void method(int a) {
+        int a;
+    }
+}

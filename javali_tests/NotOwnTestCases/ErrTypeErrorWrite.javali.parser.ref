@@ -1,6 +1,0 @@
-ClassDecl (name: Main, superClass: Object)
-| MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
-| | Seq ()
-| | Seq ()
-| | | BuiltInWrite ()
-| | | | BooleanConst (value: true)

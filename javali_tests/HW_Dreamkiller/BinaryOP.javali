@@ -1,0 +1,12 @@
+//Resulttype of binary opration is int
+
+
+class Main {
+    void main() {
+        A a1, a2;
+        int result;
+        result = a1 + a2;
+    }
+}
+
+class A {}

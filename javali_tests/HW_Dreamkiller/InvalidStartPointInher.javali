@@ -1,0 +1,7 @@
+//Main extends
+
+class Main extends A {}
+
+class A {
+    void main() {}
+}

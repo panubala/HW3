@@ -1,7 +1,0 @@
-// No_Such_Type: The parameter does not refer to an existing type.
-
-class Main {
-    void main() {}
-
-    int method(A a, boolean b) {}
-}

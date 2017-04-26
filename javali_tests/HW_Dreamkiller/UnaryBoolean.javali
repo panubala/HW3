@@ -1,0 +1,11 @@
+//Operands of unary boolean operation need to be boolean
+
+class Main {
+    void main() {
+        A a;
+        boolean result;
+        result = !a;
+    }
+}
+
+class A {}

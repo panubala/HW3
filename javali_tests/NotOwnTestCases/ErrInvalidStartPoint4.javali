@@ -1,5 +1,0 @@
-// Invalid_Start_Point: main() has an invalid signature.
-
-class Main {
-    void main(int a) {}
-}

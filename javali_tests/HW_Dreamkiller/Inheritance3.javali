@@ -1,0 +1,13 @@
+// a must be a subTypeOf b
+
+class Main {
+    void main() {
+        A a;
+        B b;
+        a = b;
+    }
+}
+
+class A extends B {}
+
+class B {}

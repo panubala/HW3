@@ -1,0 +1,8 @@
+//Resulttype of read is int
+
+class Main {
+    void main() {
+        boolean result;
+        result = read();
+    }
+}

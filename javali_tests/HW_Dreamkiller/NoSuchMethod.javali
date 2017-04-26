@@ -1,0 +1,10 @@
+//No such method
+
+class Main {
+    void main() {
+        A a;
+        a.f();
+    }
+}
+
+class A {}

@@ -1,0 +1,8 @@
+//Integer are not assignable to Boolean
+
+class Main {
+    void main() {
+        boolean b;
+        b = 0;
+    }
+}

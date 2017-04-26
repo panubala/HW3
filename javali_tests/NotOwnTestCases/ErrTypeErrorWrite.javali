@@ -1,7 +1,0 @@
-// Type_Error: Write(expr) requires expr to be of type int.
-
-class Main {
-    void main() {
-        write(true);
-    }
-}

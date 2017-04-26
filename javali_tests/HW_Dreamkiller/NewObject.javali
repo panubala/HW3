@@ -1,0 +1,12 @@
+//New Object of a non-existing class
+
+class Main {
+    void main() {}
+}
+
+class A {
+    void method() {
+        int a;
+        a = new A();
+    }
+}

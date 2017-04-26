@@ -243,8 +243,10 @@ public class SymbolTableFill extends AstVisitor<Symbol, Symbol.VariableSymbol.Ki
 			SymbolTable superClass = classTables.get(classDecl.superClass);
 			SymbolTable orClass = classTables.get(classDecl.name);
 
-			orClass.extendsFrom = classDecl.superClass;
-
+			orClass.extendsFrom.add(classDecl.superClass);
+			
+			orClass.extendsFrom.addAll(superClass.extendsFrom);
+			
 			// override Field in orClass
 			for (String fieldName : superClass.getAllFieldNames()) {
 				if (!orClass.containsField(fieldName)) { // dont exist

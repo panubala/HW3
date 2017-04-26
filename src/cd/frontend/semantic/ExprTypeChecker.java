@@ -123,19 +123,41 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 
 		if (!tr.equals(tl)) {
 			System.out.println("here1");
-			if (TypeChecker.classTable.get(tl.name).extendsFrom == null
-					&& TypeChecker.classTable.get(tr.name).extendsFrom == null) { // no
-																					// extend
-				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
-			} else if (TypeChecker.classTable.get(tl.name).extendsFrom != null
-					&& !TypeChecker.symbolTable.get(TypeChecker.classTable.get(tl.name).extendsFrom).equals(tr)) { // wrong
-																													// extend
-				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
-			} else if (TypeChecker.classTable.get(tr.name).extendsFrom != null
-					&& !TypeChecker.symbolTable.get(TypeChecker.classTable.get(tr.name).extendsFrom).equals(tl)) { // wrong
-																													// extend
+			
+			System.out.println(TypeChecker.classTable.get(tl.name).extendsFrom);
+			System.out.println(tr.name);
+			System.out.println(TypeChecker.classTable.get(tr.name).extendsFrom);
+			
+			if(TypeChecker.classTable.get(tl.name).extendsFrom.contains(tr.name) || TypeChecker.classTable.get(tr.name).extendsFrom.contains(tl.name)){
+				//OK
+			}else{
 				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
 			}
+			
+				
+//			String extendL = TypeChecker.classTable.get(tl.name).extendsFromm;
+//			String extendR = TypeChecker.classTable.get(tr.name).extendsFromm;
+//			if (extendL == null	&& extendR == null) { // no																			// extend
+//				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
+//			}
+//			else if(extendL != null && extendR == null && !TypeChecker.symbolTable.get(extendL).equals(tr)){
+//				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
+//			}
+//			else if(extendR != null && extendL == null && !TypeChecker.symbolTable.get(extendR).equals(tl)){
+//				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
+//			}
+			
+			
+			
+//			else if (TypeChecker.classTable.get(tl.name).extendsFrom != null
+//					&& !TypeChecker.symbolTable.get(TypeChecker.classTable.get(tl.name).extendsFrom).equals(tr)) { // wrong
+//																													// extend
+//				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
+//			} else if (TypeChecker.classTable.get(tr.name).extendsFrom != null
+//					&& !TypeChecker.symbolTable.get(TypeChecker.classTable.get(tr.name).extendsFrom).equals(tl)) { // wrong
+//																													// extend
+//				throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
+//			}
 		}
 		return TypeChecker.symbolTable.get(ast.typeName);
 
@@ -257,8 +279,7 @@ public class ExprTypeChecker extends ExprVisitor<Symbol.TypeSymbol, SymbolTable>
 				System.out.println(TypeChecker.classTable.get(typCal.name));
 				
 				if (TypeChecker.classTable.get(argumentType.name).extendsFrom != null
-						&& TypeChecker.classTable.get(argumentType.name).extendsFrom
-								.equals(typCal.name)) {
+						&& TypeChecker.classTable.get(argumentType.name).extendsFrom.contains(typCal.name)) {
 				} else {
 					throw new SemanticFailure(SemanticFailure.Cause.TYPE_ERROR);
 				}

@@ -3,7 +3,7 @@ package cd.frontend.semantic;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -71,7 +71,7 @@ public class SymbolTable{
 		return c;
 	}
 	
-	public String extendsFrom;
+	public Set<String> extendsFrom = new HashSet<>();
 
 	// public Set<Pair<String>> parameters = new HashSet<>();
 	public ArrayList<String> parameterNames = new ArrayList<>();

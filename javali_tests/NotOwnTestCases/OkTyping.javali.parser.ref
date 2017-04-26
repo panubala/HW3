@@ -1,5 +1,3 @@
-Debug information for file: javali_tests\NotOwnTestCases\OkTyping.javali
-AST Resulting From Parsing Stage:
 ClassDecl (name: Main, superClass: Object)
 | VarDecl (name: main, type: int)
 | MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
@@ -93,14 +91,3 @@ ClassDecl (name: C, superClass: Object)
 | | | | BinaryOp (operator: B_LESS_THAN)
 | | | | | Var (name: i)
 | | | | | Var (name: j)
-Error message: TYPE_ERROR
-
-Phase semantic failed because we expected to see:
-OK
-But we actually saw:
-TYPE_ERROR
-The difference is:
-At line   1 /   1:
-< OK
-> TYPE_ERROR
-

@@ -13,33 +13,62 @@ import cd.ir.Symbol.TypeSymbol;
 public class SymbolTable{
 
 	
-	private Map<String, TypeSymbol> symbolTable = new HashMap<>();
+	private Map<String, TypeSymbol> fieldTable = new HashMap<>();
+	private Map<String, TypeSymbol> functionTable = new HashMap<>();
 
 	public SymbolTable() {
-		this.symbolTable = symbolTable;
 	}
 
-	public SymbolTable(Map<String, TypeSymbol> table) {
-		this.symbolTable = table;
-	}
-	
-	public Map<String, TypeSymbol> wholeTable(){
-		return symbolTable;
-	}
-
-	public TypeSymbol get(String string) {
-		TypeSymbol key = symbolTable.get(string);
-
-		return key;
+	public SymbolTable(Map<String, TypeSymbol> fieldTable, Map<String, TypeSymbol> functionTable) {
+		this.fieldTable = fieldTable;
+		this.functionTable = functionTable;
 	}
 	
+	public Map<String, TypeSymbol> wholefunctionTable(){
+		return functionTable;
+	}
+	
+	public Map<String, TypeSymbol> wholefieldTable(){
+		return fieldTable;
+	}
 
-	public Collection<TypeSymbol> getAllSymbols() {
-		return symbolTable.values();
+	public TypeSymbol getFunctionType(String fncName) {
+		TypeSymbol type = functionTable.get(fncName);
+		return type;
+	}
+	
+	public TypeSymbol getFieldType(String fncName) {
+		TypeSymbol type = fieldTable.get(fncName);
+		return type;
+	}
+	
+	public Collection<TypeSymbol> getAllFunctionType() {
+		return functionTable.values();
+	}
+	
+	public Collection<TypeSymbol> getAllFieldType() {
+		return fieldTable.values();
+	}
+	
+	public Set<String> getAllFunctionNames() {
+		return functionTable.keySet();
+	}
+	
+	public Set<String> getAllFieldNames() {
+		return fieldTable.keySet();
+	}
+	
+	
+	public Collection<TypeSymbol> getAllTypeSymbols() {
+		Collection<TypeSymbol> c = fieldTable.values();
+		c.addAll(functionTable.values());
+		return c;
 	}
 	
 	public Set<String> getAllNames() {
-		return symbolTable.keySet();
+		Set<String> c = fieldTable.keySet();
+		c.addAll(functionTable.keySet());
+		return c;
 	}
 	
 	public String extendsFrom;
@@ -50,7 +79,7 @@ public class SymbolTable{
 	public String inClass;
 
 	public Collection<Symbol.ClassSymbol> getAllClassSymbols() {
-		Collection<TypeSymbol> allSymbols = symbolTable.values();
+		Collection<TypeSymbol> allSymbols = getAllTypeSymbols();
 		ArrayList result = new ArrayList<>();
 		for (Symbol s : allSymbols) {
 			if (s instanceof Symbol.ClassSymbol) {
@@ -60,22 +89,29 @@ public class SymbolTable{
 		return result;
 	}
 
-	public void put(TypeSymbol symbol) {
-		symbolTable.put(symbol.name, symbol);
-
+	public void putFunction(String fncName, TypeSymbol symbol) {
+		functionTable.put(fncName, symbol);
+	}
+	
+	public void putField(String fieldName, TypeSymbol symbol) {
+		fieldTable.put(fieldName, symbol);
 	}
 
-	public void put(String name, TypeSymbol symbol) {
-		symbolTable.put(name, symbol);
+	public boolean containsFunction(String fncName) {
+		return functionTable.containsKey(fncName);
+	}
+	
+	public boolean containsField(String fieldName) {
+		return fieldTable.containsKey(fieldName);
+	}
+	
+	public boolean containss(String name) {
+		return containsField(name) || containsFunction(name); 
 	}
 
-	public boolean containsKey(String s) {
-		return symbolTable.containsKey(s);
-	}
-
-	public boolean containsType(TypeSymbol type) {
-		return symbolTable.containsValue(type);
-	}
+//	public boolean containsType(TypeSymbol type) {
+//		return symbolTable.containsValue(type);
+//	}
 
 	public void print() {
 		System.out.println("==Table: (inClass " + inClass + ")=====");
@@ -88,12 +124,16 @@ public class SymbolTable{
 			System.out.print(par + ", ");
 		}
 
-		System.out.println("\n----------------");
+		System.out.println("\n------fields:-------");
 
-		for (String name : symbolTable.keySet()) {
-			String key = name.toString();
-			String value = symbolTable.get(name).toString();
-			System.out.println(key + " -> " + value);
+		for (String name : getAllFieldNames()) {
+			String value = fieldTable.get(name).toString();
+			System.out.println(name + " -> " + value);
+		}
+		System.out.println("--------functions:-----");
+		for (String name : getAllFunctionNames()) {
+			String value = functionTable.get(name).toString();
+			System.out.println(name + " -> " + value);
 		}
 		System.out.println("================");
 	}
